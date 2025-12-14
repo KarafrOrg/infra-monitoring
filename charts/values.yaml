@@ -63,7 +63,6 @@ kube-prometheus-stack:
     service:
       port: 9101
 x509-certificate-exporter:
-  namespaceOverride: monitoring
   prometheusServiceMonitor:
     scrapeInterval: 30s
     extraLabels:
