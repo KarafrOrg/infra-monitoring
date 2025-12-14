@@ -1,4 +1,0 @@
-kube-prometheus-stack:
-  prometheus-node-exporter:
-    service:
-      port: 9101
