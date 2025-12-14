@@ -1,7 +1,5 @@
 kube-prometheus-stack:
   grafana:
-    networkPolicy:
-      enabled: true
     ingress:
       enabled: true
       ingressClassName: traefik
