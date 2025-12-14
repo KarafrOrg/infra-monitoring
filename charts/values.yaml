@@ -3,6 +3,8 @@ kube-prometheus-stack:
     prometheusSpec:
       enableOTLPReceiver: true
   grafana:
+    networkPolicy:
+      enabled: true
     ingress:
       enabled: true
       ingressClassName: traefik
@@ -14,10 +16,52 @@ kube-prometheus-stack:
         - hosts:
             - grafana.karafra.net
           secretName: grafana-tls
+    admin:
+      existingSecret: grafana-admin-secret
+      userKey: username
+      passwordKey: password
+
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://monitoring-loki-gateway.monitoring.svc.cluster.local:8083
+        jsonData:
+          maxmatchLabels:
+            metrics-collector: prometheus
+            Lines: 1000
+          minInterval: 1s
+        editable: true
+        isDefault: false
+
+    grafana.ini:
+      server:
+        root_url: https://grafana.karafra.net
+      auth:
+        disable_login_form: true
+      auth.github:
+        enabled: true
+        client_id: ${GITHUB_CLIENT_ID}
+        client_secret: ${GITHUB_CLIENT_SECRET}
+        scopes: user:email,read:org
+        auth_url: https://github.com/login/oauth/authorize
+        token_url: https://github.com/login/oauth/access_token
+        api_url: https://api.github.com/user
+        allow_sign_up: true
+        auto_login: true
+        allowed_organizations: [ "KarafrOrg" ]
+        org_mapping: '*:*:Admin'
+    envFromSecrets:
+      - name: github-grafana-oauth-secret
+        prefix: GITHUB_
+    sidecar:
+      dashboards:
+        label: monitoring.coreos.com/grafana-dashboard
+        labelValue: 'true'
+        enabled: true
   prometheus-node-exporter:
     service:
       port: 9101
-
 x509-certificate-exporter:
   namespaceOverride: monitoring
   prometheusServiceMonitor:
