@@ -1,0 +1,13 @@
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      enableOTLPReceiver: true
+  prometheus-node-exporter:
+    service:
+      port: 9101
+  grafana:
+    networkPolicy:
+      enabled: true
+    ingress:
+      enabled: true
+      ingressClassName: traefik
