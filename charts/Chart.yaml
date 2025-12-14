@@ -19,5 +19,5 @@ dependencies:
     repository: https://prometheus-community.github.io/helm-charts
     import-values:
       - values-grafana.yaml
-      - values-prometheus.yaml
-      - values-prometheus-node-exporter.yaml
+      #- values-prometheus.yaml
+      #- values-prometheus-node-exporter.yaml
