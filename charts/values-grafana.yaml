@@ -1,0 +1,16 @@
+kube-prometheus-stack:
+  grafana:
+    networkPolicy:
+      enabled: true
+    ingress:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+        hosts:
+          - grafana.karafra.net
+        tls:
+          - hosts:
+              - grafana.karafra.net
+            secretName: grafana-tls
