@@ -1,4 +1,6 @@
 kube-prometheus-stack:
+  crds:
+
   prometheus:
     prometheusSpec:
       enableOTLPReceiver: true
