@@ -21,3 +21,8 @@ dependencies:
       - values-grafana.yaml
       #- values-prometheus.yaml
       #- values-prometheus-node-exporter.yaml
+  - name: x509-certificate-exporter
+    version: 3.19.1
+    repository: https://charts.enix.io
+    import-values:
+      - x509-certificate-exporter-values.yaml

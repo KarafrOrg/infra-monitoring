@@ -1,0 +1,11 @@
+x509-certificate-exporter:
+  namespaceOverride: monitoring
+  prometheusServiceMonitor:
+    scrapeInterval: 30s
+    extraLabels:
+      metrics-collector: prometheus
+  prometheusPodMonitor:
+    create: true
+    scrapeInterval: 30s
+    extraLabels:
+      metrics-collector: prometheus
