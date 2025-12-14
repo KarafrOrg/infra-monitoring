@@ -1,3 +1,0 @@
-prometheus:
-  prometheusSpec:
-    enableOTLPReceiver: true

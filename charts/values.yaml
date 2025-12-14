@@ -1,0 +1,31 @@
+kube-prometheus-stack:
+  prometheus:
+    prometheusSpec:
+      enableOTLPReceiver: true
+  grafana:
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+      hosts:
+        - grafana.karafra.net
+      tls:
+        - hosts:
+            - grafana.karafra.net
+          secretName: grafana-tls
+  prometheus-node-exporter:
+    service:
+      port: 9101
+
+x509-certificate-exporter:
+  namespaceOverride: monitoring
+  prometheusServiceMonitor:
+    scrapeInterval: 30s
+    extraLabels:
+      metrics-collector: prometheus
+  prometheusPodMonitor:
+    create: true
+    scrapeInterval: 30s
+    extraLabels:
+      metrics-collector: prometheus
