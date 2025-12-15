@@ -3,23 +3,7 @@ kube-prometheus-stack:
     prometheusSpec:
       enableOTLPReceiver: true
   grafana:
-    networkPolicy:
-      enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: traefik
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
-      hosts:
-        - grafana.karafra.net
-      tls:
-        - hosts:
-            - grafana.karafra.net
-          secretName: grafana-tls
-    admin:
-      existingSecret: grafana-admin-secret
-      userKey: username
-      passwordKey: password
+    enabled: false
 
     additionalDataSources:
       - name: Loki
@@ -72,3 +56,101 @@ x509-certificate-exporter:
     scrapeInterval: 30s
     extraLabels:
       metrics-collector: prometheus
+
+tempo-distributed:
+  global:
+    image:
+      registry: docker.io
+
+  tempo:
+    metricsGenerator:
+      enabled: true
+      remoteWriteUrl: http://prometheus-kube-prometheus-prometheus.monitoring:9090/api/v1/write
+    reportingEnabled: false
+    multitenancyEnabled: false
+    retention: 168h # 7 days
+    storage:
+      trace:
+        backend: s3
+        s3:
+          bucket: tempo-traces           # Name of the bucket in Ceph RGW
+          endpoint: rook-ceph-rgw.ceph.svc.cluster.local:80  # RGW service endpoint
+          access_key: tempo              # Ceph RGW access key
+          secret_key: tempo-secret       # Ceph RGW secret key
+          insecure: true                 # RGW usually runs HTTP inside cluster
+        wal:
+          path: /var/tempo/wal
+        local:
+          path: /var/tempo/blocks
+
+    server:
+      http_listen_port: 3100
+
+    overrides:
+      defaults:
+        ingestion:
+          burst_size_bytes: 20000000
+          rate_limit_bytes: 15000000
+  distributor:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+    serviceMonitor:
+      enabled: true
+  ingester:
+    replicas: 3
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+    serviceMonitor:
+      enabled: true
+
+  querier:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+    serviceMonitor:
+      enabled: true
+  queryFrontend:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+  compactor:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+  gateway:
+    enabled: true
+    replicas: 2
+
+    service:
+      type: ClusterIP
+      port: 80
+
+    serviceMonitor:
+      enabled: true
