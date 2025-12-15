@@ -1,1 +1,5 @@
-{ }
+prometheus:
+  server:
+    persistentVolume:
+      storageClass: longhorn
+      size: 50Gi
