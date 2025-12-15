@@ -3,3 +3,7 @@ prometheus:
     persistentVolume:
       storageClass: longhorn
       size: 50Gi
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
