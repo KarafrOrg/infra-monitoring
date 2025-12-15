@@ -2,11 +2,5 @@ dependencies:
 - name: grafana
   repository: https://grafana.github.io/helm-charts
   version: 10.3.1
-- name: x509-certificate-exporter
-  repository: https://charts.enix.io
-  version: 3.19.1
-- name: tempo-distributed
-  repository: https://grafana.github.io/helm-charts
-  version: 1.58.1
-digest: sha256:cc5ea2245db9516159d2c33ac8a7b3a541e580445e504fcaef730973073d3bbd
-generated: "2025-12-15T18:22:58.717831+01:00"
+digest: sha256:749f581ca88581955b19f9258c0eb03f7a2cf10d09fb35ab00ccdfa767bbc0d7
+generated: "2025-12-15T19:31:02.330904+01:00"
