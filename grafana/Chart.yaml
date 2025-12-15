@@ -14,9 +14,9 @@ keywords:
   - loki
   - homelab
 dependencies:
-  - name: kube-prometheus-stack
-    version: 80.4.1
-    repository: https://prometheus-community.github.io/helm-charts
+  - name: grafana
+    version: 10.3.1
+    repository: https://grafana.github.io/helm-charts
   - name: x509-certificate-exporter
     version: 3.19.1
     repository: https://charts.enix.io
