@@ -33,11 +33,11 @@ grafana:
       auto_login: true
       allowed_organizations: [ "KarafrOrg" ]
       org_mapping: '*:*:Admin'
-    envFromSecrets:
-      - name: github-grafana-oauth-secret
-        prefix: GITHUB_
-    sidecar:
-      dashboards:
-        label: monitoring.coreos.com/grafana-dashboard
-        labelValue: 'true'
-        enabled: true
+  envFromSecrets:
+    - name: github-grafana-oauth-secret
+      prefix: GITHUB_
+  sidecar:
+    dashboards:
+      label: monitoring.coreos.com/grafana-dashboard
+      labelValue: 'true'
+      enabled: true
