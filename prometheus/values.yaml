@@ -9,7 +9,7 @@ prometheus:
         whenUnsatisfiable: DoNotSchedule
   alertmanager:
     persistence:
-      storageClassName: longhorn
+      storageClass: longhorn
       size: 10Gi
   prometheus-pushgateway:
     persistentVolume:
