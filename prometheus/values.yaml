@@ -1,0 +1,18 @@
+prometheus-operator:
+  prometheus:
+    prometheusSpec:
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: longhorn
+            resources:
+              requests:
+                storage: 50Gi
+  alertmanager:
+    alertmanagerSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 50Gi
