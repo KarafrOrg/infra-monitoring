@@ -1,0 +1,4 @@
+tempo-distributed:
+  storage:
+    trace:
+      backend: s3

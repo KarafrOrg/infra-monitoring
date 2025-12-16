@@ -14,9 +14,6 @@ keywords:
   - loki
   - homelab
 dependencies:
-  - name: prometheus-operator
-    version: 9.3.2
-    repository: https://prometheus-community.github.io/helm-charts
-  - name: prometheus-operator-crds
-    version: 25.0.1
-    repository: https://prometheus-community.github.io/helm-charts
+  - name: tempo-distributed
+    version: 1.58.1
+    repository: https://grafana.github.io/helm-charts
