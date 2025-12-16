@@ -1,16 +1,18 @@
-prometheus:
-  server:
-    persistentVolume:
-      storageClass: longhorn
-      size: 50Gi
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: DoNotSchedule
+prometheus-operator:
+  prometheus:
+    prometheusSpec:
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: longhorn
+            resources:
+              requests:
+                storage: 50Gi
   alertmanager:
-    persistence:
-      storageClass: longhorn
-      size: 10Gi
-  prometheus-pushgateway:
-    persistentVolume:
-      storageClass: longhorn
+    alertmanagerSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 50Gi
