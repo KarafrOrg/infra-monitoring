@@ -11,4 +11,4 @@ tempo-distributed:
   ingester:
     extraEnvFrom:
       - secretRef:
-          name: seaweedfs-s3-credentials
+          name: tempo-s3-creds
