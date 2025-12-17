@@ -1,4 +1,6 @@
 tempo-distributed:
+  distributor:
+    replicas: 3
   storage:
     trace:
       backend: s3
