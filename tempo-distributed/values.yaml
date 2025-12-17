@@ -1,4 +1,5 @@
 tempo-distributed:
+
   storage:
     trace:
       backend: s3
@@ -8,7 +9,30 @@ tempo-distributed:
         region: us-east-1
         insecure: true
         forcepathstyle: true
+
+  distributor:
+    replicas: 3
+    podManagementPolicy: OrderedReady
+    terminationGracePeriodSeconds: 60
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+
   ingester:
+    replicas: 3
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
