@@ -14,6 +14,6 @@ keywords:
   - loki
   - homelab
 dependencies:
-  - name: loki-stack
+  - name: loki
     repository: https://grafana.github.io/helm-charts
-    version: 2.10.3
+    version: 2.12.0
