@@ -1,0 +1,21 @@
+alloy:
+  alloy:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+    configMap:
+      create: false
+      key: config
+      name: infra-monitoring-alloy-config
+  serviceAccount:
+    create: true
+    name: alloy
+
+  rbac:
+    create: true
+  controller:
+    replicas: 3
