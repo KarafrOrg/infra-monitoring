@@ -10,7 +10,7 @@ alloy:
     configMap:
       create: false
       key: config
-      name: infra-monitoring-alloy-config
+      name: infra-monitoring-alloy-homelab-monitoring-config
   serviceAccount:
     create: true
     name: alloy
