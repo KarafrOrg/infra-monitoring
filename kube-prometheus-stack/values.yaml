@@ -67,6 +67,16 @@ kube-prometheus-stack:
           minInterval: 1s
         editable: true
         isDefault: false
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
+        jsonData:
+          maxmatchLabels:
+            metrics-collector: prometheus
+            Traces: 1000
+        editable: false
+        isDefault: false
 
     grafana.ini:
       server:
@@ -89,7 +99,6 @@ kube-prometheus-stack:
     envFromSecrets:
       - name: github-grafana-oauth-secret
         prefix: GITHUB_
-
     sidecar:
       dashboards:
         label: monitoring.coreos.com/grafana-dashboard
