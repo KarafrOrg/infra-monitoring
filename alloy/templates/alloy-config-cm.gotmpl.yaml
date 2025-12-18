@@ -1,0 +1,197 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "alloy.fullname" . }}-config
+data:
+  config: |
+    logging {
+          level  = "info"
+          format = "json"
+        }
+
+        discovery.kubernetes "pods" {
+          role = "pod"
+        }
+
+        discovery.relabel "pod_logs" {
+          targets = discovery.kubernetes.pods.targets
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_label_app"]
+            target_label  = "app"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_label_version"]
+            target_label  = "version"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_node_name"]
+            target_label  = "node"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+            separator     = "/"
+            target_label  = "job"
+          }
+        }
+
+        loki.source.kubernetes "pod_logs" {
+          targets    = discovery.relabel.pod_logs.output
+          forward_to = [loki.process.pod_logs.receiver]
+        }
+
+        loki.process "pod_logs" {
+          stage.parse_json {
+          }
+          stage.labels {
+            values = {
+              pod       = "pod",
+              namespace = "namespace",
+              app       = "app",
+              version   = "version",
+              node      = "node",
+              container = "container",
+            }
+          }
+          forward_to = [loki.write.default.receiver]
+        }
+
+        loki.write "default" {
+          endpoint {
+            url = "http://loki-distributed-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
+          }
+        }
+
+        discovery.relabel "otel_traces" {
+          targets = discovery.kubernetes.pods.targets
+          rule {
+            source_labels = ["__meta_kubernetes_pod_annotation_instrumentation_io_opentelemetry_enabled"]
+            regex         = "^true$"
+            action        = "keep"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_label_app"]
+            target_label  = "app"
+          }
+          rule {
+            source_labels = ["__address__"]
+            regex         = "([^:]+)(?::\\d+)?"
+            replacement   = "$${1}:4317"
+            target_label  = "__address__"
+          }
+        }
+
+        otelreceiver.otlp "default" {
+          protocols {
+            grpc {
+              endpoint = "0.0.0.0:4317"
+            }
+            http {
+              endpoint = "0.0.0.0:4318"
+            }
+          }
+          output {
+            traces  = [otelprocessor.batch.default.input]
+            metrics = [otelprocessor.batch.default.input]
+            logs    = [otelprocessor.batch.default.input]
+          }
+        }
+
+        otelprocessor.batch "default" {
+          send_batch_size       = 1024
+          timeout               = "10s"
+          send_batch_max_size   = 2048
+          output {
+            traces  = [otelprocessor.resource.default.input]
+            metrics = [otelprocessor.resource.default.input]
+            logs    = [otelprocessor.resource.default.input]
+          }
+        }
+
+        otelprocessor.resource "default" {
+          attributes {
+            insert = {
+              "deployment.environment" = "production",
+              "service.version"        = "1.0",
+            }
+          }
+          output {
+            traces  = [otlexporter.otlp.tempo.input]
+            metrics = [otlexporter.otlp.prometheus.input]
+            logs    = [otlexporter.otlp.loki.input]
+          }
+        }
+
+        otlexporter.otlp "tempo" {
+          client {
+            endpoint = "http://tempo.infra-monitoring.svc.cluster.local:4317"
+          }
+        }
+
+        otlexporter.otlp "prometheus" {
+          client {
+            endpoint = "http://prometheus.infra-monitoring.svc.cluster.local:4317"
+          }
+        }
+
+        otlexporter.otlp "loki" {
+          client {
+            endpoint = "http://loki-distributed-gateway.infra-monitoring.svc.cluster.local:4317"
+          }
+        }
+
+        discovery.relabel "prometheus" {
+          targets = discovery.kubernetes.pods.targets
+          rule {
+            source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+            regex         = "^true$"
+            action        = "keep"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_port"]
+            action        = "replace"
+            target_label  = "__meta_kubernetes_pod_container_port_number"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+            action        = "replace"
+            target_label  = "__metrics_path__"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_label_app"]
+            target_label  = "app"
+          }
+        }
+
+        prometheus.scrape "pod_metrics" {
+          targets      = discovery.relabel.prometheus.output
+          forward_to   = [prometheus.remote_write.mimir.receiver]
+          scrape_interval = "30s"
+        }
