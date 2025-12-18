@@ -14,7 +14,9 @@ tempo-distributed:
     replicas: 3
     podManagementPolicy: OrderedReady
     terminationGracePeriodSeconds: 60
-
+    extraEnvFrom:
+      - secretRef:
+          name: tempo-s3-creds
     resources:
       requests:
         cpu: 250m
