@@ -1,0 +1,26 @@
+pyroscope:
+  pyroscope:
+    replicaCount: 3
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+    config:
+      storage:
+        backend: s3
+        s3:
+          bucket_name: pyroscope-profiles
+          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          region: us-east-1
+          insecure: true
+          forcepathstyle: true
+    extraEnvFrom:
+      - secretRef:
+          name: pyroscope-s3-creds
+  minio:
+    enabled: false
+  alloy:
+    enabled: false
