@@ -50,3 +50,33 @@ tempo-distributed:
       limits:
         cpu: 1
         memory: 1Gi
+
+  querier:
+    replicas: 3
+    podManagementPolicy: OrderedReady
+    terminationGracePeriodSeconds: 60
+    extraEnvFrom:
+      - secretRef:
+          name: tempo-s3-creds
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+
+  queryFrontend:
+    replicas: 3
+    podManagementPolicy: OrderedReady
+    terminationGracePeriodSeconds: 60
+    extraEnvFrom:
+      - secretRef:
+          name: tempo-s3-creds
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
