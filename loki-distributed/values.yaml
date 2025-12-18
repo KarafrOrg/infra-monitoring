@@ -1,5 +1,7 @@
 global:
   extraEnvFrom:
+    - secretRef:
+        name: loki-s3-creds
 
 loki:
   loki:
