@@ -19,7 +19,12 @@ alloy:
         memory: 512Mi
     extraPorts:
       - name: otel-grpc
-        containerPort: 4317
+        port: 4317
+        targetPort: 4317
+        protocol: TCP
+      - name: otel-http
+        port: 4318
+        targetPort: 4318
         protocol: TCP
     configMap:
       create: false
