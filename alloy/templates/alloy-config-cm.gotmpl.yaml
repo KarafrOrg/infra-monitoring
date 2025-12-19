@@ -84,3 +84,9 @@ data:
           forward_to      = [prometheus.remote_write.default.receiver]
           scrape_interval = "30s"
         }
+
+        prometheus.remote_write "default" {
+            endpoint {
+              url = "http://infra-monitoring-kube-prom-prometheus.infra-monitoring:9090/api/v1/write"
+          }
+        }
