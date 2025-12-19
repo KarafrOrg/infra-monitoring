@@ -1,3 +1,14 @@
+global:
+  podSecurityContext:
+    privileged: true
+    capabilities:
+      add:
+        - SYS_ADMIN
+        - SYS_RESOURCE
+        - SYS_TIME
+        - NET_ADMIN
+        - PERFMON
+        - BPF
 alloy:
   alloy:
     resources:
