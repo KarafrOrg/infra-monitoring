@@ -25,9 +25,7 @@ beyla:
           enable: true
         memory:
           enable: true
-
-      otel:
-        exporter:
-          otlp:
-            endpoint: "http://infra-monitoring-tempo-distributed-distributor.infra-monitoring.svc.cluster.local:9095"
-            protocol: grpc
+      otel_metrics_export:
+        endpoint: http:// infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4318
+      otel_traces_export:
+        endpoint: http:// infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4318
