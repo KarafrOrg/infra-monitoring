@@ -44,6 +44,29 @@ data:
       }
     }
 
+    otelcol.exporter.prometheus "beyla_metrics" {
+      endpoint = "0.0.0.0:4137/metrics"
+    }
+
+    otelcol.processor.batch "metrics_batch" {
+      send_batch_size = 1024
+      timeout         = "5s"
+
+      output {
+        metrics = [otelcol.exporter.prometheus.beyla_metrics.input]
+      }
+    }
+
+    service {
+      pipelines {
+        metrics {
+          receivers  = [otelcol.receiver.otlp.default.input]
+          processors = [otelcol.processor.batch.metrics_batch.input]
+          exporters  = [otelcol.exporter.prometheus.beyla_metrics.input]
+        }
+      }
+    }
+
     discovery.relabel "pod_profiles" {
       targets = discovery.kubernetes.pods.targets
 
