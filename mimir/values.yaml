@@ -15,6 +15,7 @@ mimir-distributed:
           endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
           secret_access_key: ${AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
+          insecure: true
       blocks_storage:
         backend: s3
         s3:
@@ -23,6 +24,7 @@ mimir-distributed:
           endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
           secret_access_key: ${AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
+          insecure: true
       ruler_storage:
         s3:
           bucket_name: mimir-ruler
@@ -30,6 +32,7 @@ mimir-distributed:
           endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
           secret_access_key: ${AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
+          insecure: true
   alertmanager:
     persistentVolume:
       enabled: true
