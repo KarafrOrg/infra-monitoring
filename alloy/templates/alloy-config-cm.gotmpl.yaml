@@ -13,12 +13,21 @@ data:
       role = "pod"
     }
 
-    otelcol.processor.batch "default" {
+    otelcol.processor.batch "traces" {
       send_batch_size = 1024
       timeout         = "5s"
 
       output {
         traces = [otelcol.exporter.otlp.tempo.input]
+      }
+    }
+
+    otelcol.processor.batch "metrics" {
+      send_batch_size = 1024
+      timeout         = "5s"
+
+      output {
+        metrics = [otelcol.exporter.prometheusremotewrite.mimir.input]
       }
     }
 
@@ -31,16 +40,8 @@ data:
       }
     }
 
-    otelcol.processor.batch "beyla_metrics_batch" {
-      send_batch_size = 1024
-      timeout         = "5s"
-      output {
-        metrics = [prometheus.remote_write.default.receiver]
-      }
-    }
-
-    otelcol.exporter.prometheus "beyla_metrics" {
-      forward_to      = [prometheus.remote_write.default.receiver]
+    otelcol.exporter.prometheusremotewrite "mimir" {
+      endpoint = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
     }
 
     otelcol.receiver.otlp "default" {
@@ -50,9 +51,10 @@ data:
       http {
         endpoint = "0.0.0.0:4318"
       }
+
       output {
-        metrics = [otelcol.processor.batch.beyla_metrics_batch.input]
-        traces  = [otelcol.processor.batch.default.input]
+        metrics = [otelcol.processor.batch.metrics.input]
+        traces  = [otelcol.processor.batch.traces.input]
       }
     }
 
