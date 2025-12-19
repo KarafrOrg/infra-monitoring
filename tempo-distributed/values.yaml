@@ -61,8 +61,21 @@ tempo-distributed:
         memory: 512Mi
     config:
       storage:
+        remote_write_add_org_id_header: true
+        remote_write_flush_deadline: 1m
         remote_write:
           - url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push
+            remote_timeout: 30s
+            send_exemplars: true
+            queue_config:
+              max_samples_per_send: 40000
+              max_shards: 30
+            metadata_config:
+              send: true
+              send_interval: 1m
+              max_samples_per_send: 40000
+      traces_storage:
+        path: /var/tempo/traces
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
@@ -114,3 +127,7 @@ tempo-distributed:
       limits:
         cpu: 1
         memory: 1Gi
+  overrides:
+    defaults:
+      metrics_generator:
+        processors: [ service-graphs, span-metrics, local-blocks ]
