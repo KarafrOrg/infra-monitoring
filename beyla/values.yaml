@@ -29,6 +29,6 @@ beyla:
         memory:
           enable: true
       otel_metrics_export:
-        endpoint: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
+        endpoint: http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4317
       otel_traces_export:
         endpoint: http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4318
