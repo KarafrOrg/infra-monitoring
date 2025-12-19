@@ -3,8 +3,9 @@ beyla:
     data:
       discovery:
         services:
-          kubernetes:
-            enabled: true
+          - exclude:
+              pod_name: ".*alloy.*"
+
       attributes:
         kubernetes:
           metadata:
