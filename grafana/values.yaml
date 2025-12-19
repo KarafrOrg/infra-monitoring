@@ -54,8 +54,17 @@ grafana:
           url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
           jsonData:
             httpMethod: GET
-            serviceMap:
-              datasourceUid: prometheus
+            maxmatchLabels:
+              metrics-collector: prometheus
+              Traces: 1000
+          editable: false
+          isDefault: false
+
+        - name: Pyroscope
+          type: grafana-pyroscope-datasource
+          access: proxy
+          uid: pyroscope
+          url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: false
           isDefault: false
 
