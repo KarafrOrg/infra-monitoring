@@ -37,7 +37,7 @@ data:
 
     otelcol.exporter.otlp "tempo" {
       client {
-        endpoint = "http://infra-monitoring-tempo-distributed-gateway.infra-monitoring.svc.cluster.local:80"
+        endpoint = "http://infra-monitoring-tempo-distributed-gateway.infra-monitoring.svc.cluster.local:4317"
         tls {
           insecure = true
         }
