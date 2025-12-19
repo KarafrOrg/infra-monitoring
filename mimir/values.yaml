@@ -1,4 +1,36 @@
+global:
+  extraEnvFrom:
+    - secretRef:
+        name: mimir-s3-creds
+  podAnnotations:
+    bucketSecretVersion: "0"
+
 mimir-distributed:
+  mimir:
+    structuredConfig:
+      alertmanager_storage:
+        s3:
+          bucket_name: mimir-ruler
+          access_key_id: ${AWS_ACCESS_KEY_ID}
+          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+          s3forcepathstyle: true
+      blocks_storage:
+        backend: s3
+        s3:
+          bucket_name: mimir-blocks
+          access_key_id: ${AWS_ACCESS_KEY_ID}
+          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+          s3forcepathstyle: true
+      ruler_storage:
+        s3:
+          bucket_name: mimir-ruler
+          access_key_id: ${AWS_ACCESS_KEY_ID}
+          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+          s3forcepathstyle: true
+  configStorageType:
   alertmanager:
     persistentVolume:
       enabled: true
@@ -79,7 +111,8 @@ mimir-distributed:
     replicas: 1
     resources:
       limits:
-        memory: 128Mi
+        memory: 256Mi
+        cpu: 300m
       requests:
         cpu: 100m
         memory: 128Mi
