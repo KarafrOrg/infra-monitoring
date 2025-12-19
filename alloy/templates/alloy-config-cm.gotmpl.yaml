@@ -31,17 +31,17 @@ data:
       }
     }
 
+    prometheus.remote_write "beyla" {
+      endpoint {
+        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
+      }
+    }
+
     otelcol.processor.batch "beyla_metrics_batch" {
       send_batch_size = 1024
       timeout         = "5s"
       output {
-          metrics = [prometheus.remote_write.beyla.input]
-        }
-    }
-
-    prometheus.remote_write "beyla" {
-      endpoint {
-        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
+        metrics = [prometheus.remote_write.beyla.input]
       }
     }
 
