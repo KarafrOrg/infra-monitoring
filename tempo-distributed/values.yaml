@@ -8,7 +8,6 @@ tempo-distributed:
         region: us-east-1
         insecure: true
         forcepathstyle: true
-
   compactor:
     extraEnvFrom:
       - secretRef:
