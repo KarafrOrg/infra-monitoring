@@ -28,7 +28,7 @@ alloy:
         protocol: TCP
     configMap:
       create: false
-      key: config
+      key: 'config.alloy'
       name: infra-monitoring-alloy-homelab-monitoring-config
   serviceAccount:
     create: true
