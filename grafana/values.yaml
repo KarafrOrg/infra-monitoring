@@ -16,40 +16,45 @@ grafana:
     existingSecret: grafana-admin-secret
     userKey: username
     passwordKey: password
+
   datasources:
-    - name: Loki
-      type: loki
-      access: proxy
-      url: http://monitoring-loki-gateway.monitoring.svc.cluster.local:8083
-      jsonData:
-        maxmatchLabels:
-          metrics-collector: prometheus
-          Lines: 1000
-        minInterval: 1s
-      editable: true
-      isDefault: false
-    - name: Tempo
-      type: tempo
-      access: proxy
-      url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
-      jsonData:
-        maxmatchLabels:
-          metrics-collector: prometheus
-          Traces: 1000
-      editable: false
-      isDefault: false
-    - name: Pyroscope
-      type: pyroscope
-      access: proxy
-      url: http://infra-monitoring-pyroscope.infra-monitoring-pyroscope.svc.cluster.local:4040
-      editable: true
-      isDefault: false
-    - name: Prometheus
-      type: prometheus
-      access: proxy
-      url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
-      isDefault: true
-      editable: false
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://monitoring-loki-gateway.monitoring.svc.cluster.local:8083
+          jsonData:
+            maxmatchLabels:
+              metrics-collector: prometheus
+              Lines: 1000
+            minInterval: 1s
+          editable: true
+          isDefault: false
+        - name: Tempo
+          type: tempo
+          access: proxy
+          url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
+          jsonData:
+            maxmatchLabels:
+              metrics-collector: prometheus
+              Traces: 1000
+          editable: false
+          isDefault: false
+        - name: Pyroscope
+          type: pyroscope
+          access: proxy
+          url: http://infra-monitoring-pyroscope.infra-monitoring-pyroscope.svc.cluster.local:4040
+          editable: true
+          isDefault: false
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
+          isDefault: true
+          editable: false
+
   grafana.ini:
     server:
       root_url: https://grafana.karafra.net
