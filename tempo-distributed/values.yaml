@@ -63,7 +63,6 @@ tempo-distributed:
       storage:
         remote_write:
           - url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push
-            send_interval: 15s
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
