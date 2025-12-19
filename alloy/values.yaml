@@ -1,3 +1,15 @@
+global:
+  podSecurityContext:
+    runAsUser: 0
+    fsGroup: 65534
+    sysctls:
+      - name: fs.inotify.max_user_watches
+        value: "524288"
+      - name: fs.inotify.max_queued_events
+        value: "32768"
+      - name: fs.inotify.max_user_instances
+        value: "8192"
+
 alloy:
   alloy:
     resources:
@@ -14,7 +26,6 @@ alloy:
   serviceAccount:
     create: true
     name: alloy
-
   rbac:
     create: true
   controller:
