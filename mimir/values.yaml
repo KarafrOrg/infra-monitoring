@@ -125,7 +125,7 @@ mimir-distributed:
       limits:
         memory: 5.6Gi
       requests:
-        cpu: 2
+        cpu: 1
         memory: 4Gi
 
   query_frontend:
@@ -134,7 +134,7 @@ mimir-distributed:
       limits:
         memory: 2.8Gi
       requests:
-        cpu: 2
+        cpu: 1
         memory: 2Gi
 
   ruler:
