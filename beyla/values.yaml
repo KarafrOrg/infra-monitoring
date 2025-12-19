@@ -1,6 +1,6 @@
 beyla:
   env:
-    - OTEL_EBPF_KUBE_CLUSTER_NAME: kubernetes.karafra.net
+    OTEL_EBPF_KUBE_CLUSTER_NAME: kubernetes.karafra.net
   config:
     data:
       discovery:
