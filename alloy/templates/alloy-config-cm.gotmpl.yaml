@@ -125,6 +125,6 @@ data:
 
     prometheus.remote_write "default" {
       endpoint {
-        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/prom/push"
+        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/prom/remote/write"
       }
     }
