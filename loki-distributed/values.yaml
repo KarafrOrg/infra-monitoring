@@ -82,4 +82,4 @@ loki:
     serviceMonitor:
       enabled: true
     selfMonitoring:
-      enabled: true
+      enabled: false
