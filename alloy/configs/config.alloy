@@ -182,3 +182,7 @@ prometheus.remote_write "default" {
     url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
   }
 }
+
+prometheus.operator.servicemonitors "default" {
+  forward_to = [prometheus.remote_write.default.receiver]
+}
