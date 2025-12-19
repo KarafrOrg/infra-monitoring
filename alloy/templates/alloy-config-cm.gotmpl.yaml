@@ -84,9 +84,3 @@ data:
           forward_to      = [prometheus.remote_write.default.receiver]
           scrape_interval = "30s"
         }
-
-        prometheus.remote_write "default" {
-          endpoint {
-            url = "http://mimir-distributor.infra-monitoring.svc.cluster.local:8080/api/prom/push"
-          }
-        }
