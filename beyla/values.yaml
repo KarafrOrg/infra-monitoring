@@ -1,0 +1,23 @@
+beyla:
+  config:
+    data:
+      discovery:
+        services:
+          - namespace: ""
+            pod_name_pattern: "^(?!.*alloy).*$"
+      attributes:
+        kubernetes:
+          metadata:
+            - namespace
+            - pod_name
+            - deployment_name
+            - service_name
+      metrics:
+        enabled: true
+      traces:
+        enabled: true
+      profiles:
+        enabled: true
+      exporters:
+        otlp:
+          endpoint: "http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4317"
