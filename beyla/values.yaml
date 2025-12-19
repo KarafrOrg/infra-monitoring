@@ -3,22 +3,31 @@ beyla:
     data:
       discovery:
         services:
-          - exclude:
-              pod_name: ".*alloy.*"
-
+          - k8s_deployment_name: .
+        exclude_services:
+          - exe_path: ".*alloy.*"
       attributes:
         kubernetes:
+          enable: true
           metadata:
             - namespace
             - pod_name
             - deployment_name
             - service_name
+      network:
+        enable: true
       metrics:
-        enabled: true
+        enable: true
       traces:
-        enabled: true
-      profiles:
-        enabled: true
-      exporters:
-        otlp:
-          endpoint: "http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4317"
+        enable: true
+      profiling:
+        cpu:
+          enable: true
+        memory:
+          enable: true
+
+      otel:
+        exporter:
+          otlp:
+            endpoint: "http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4317"
+            protocol: grpc
