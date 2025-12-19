@@ -27,7 +27,7 @@ data:
       timeout         = "5s"
 
       output {
-        metrics = [otelcol.exporter.prometheusremotewrite.mimir.input]
+        metrics = [otelcol.exporter.prometheus.beyla.input]
       }
     }
 
@@ -40,8 +40,9 @@ data:
       }
     }
 
-    otelcol.exporter.prometheusremotewrite "mimir" {
-      endpoint = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
+    otelcol.exporter.prometheus "beyla" {
+      listen_address = "0.0.0.0"
+      listen_port    = 4137
     }
 
     otelcol.receiver.otlp "default" {
@@ -55,6 +56,22 @@ data:
       output {
         metrics = [otelcol.processor.batch.metrics.input]
         traces  = [otelcol.processor.batch.traces.input]
+      }
+    }
+
+    prometheus.scrape "beyla" {
+      targets = [
+        {
+          __address__ = "127.0.0.1:4137"
+        }
+      ]
+      scrape_interval = "15s"
+      forward_to      = [prometheus.remote_write.default.receiver]
+    }
+
+    prometheus.remote_write "default" {
+      endpoint {
+        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
       }
     }
 
@@ -151,54 +168,5 @@ data:
     loki.write "default" {
       endpoint {
         url = "http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
-      }
-    }
-
-    discovery.relabel "prometheus" {
-      targets = discovery.kubernetes.pods.targets
-
-      rule {
-        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
-        regex         = "^true$"
-        action        = "keep"
-      }
-
-      rule {
-        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_port"]
-        action        = "replace"
-        target_label  = "__meta_kubernetes_pod_container_port_number"
-      }
-
-      rule {
-        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
-        action        = "replace"
-        target_label  = "__metrics_path__"
-      }
-
-      rule {
-        source_labels = ["__meta_kubernetes_pod_name"]
-        target_label  = "pod"
-      }
-
-      rule {
-        source_labels = ["__meta_kubernetes_namespace"]
-        target_label  = "namespace"
-      }
-
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app"]
-        target_label  = "app"
-      }
-    }
-
-    prometheus.scrape "pod_metrics" {
-      targets         = discovery.relabel.prometheus.output
-      scrape_interval = "30s"
-      forward_to      = [prometheus.remote_write.default.receiver]
-    }
-
-    prometheus.remote_write "default" {
-      endpoint {
-        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
       }
     }
