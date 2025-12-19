@@ -21,9 +21,6 @@ alloy:
       - name: otel-grpc
         containerPort: 4317
         protocol: TCP
-      - name: otel-http
-        containerPort: 4318
-        protocol: TCP
     configMap:
       create: false
       key: config
