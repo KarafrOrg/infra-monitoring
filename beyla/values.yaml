@@ -3,8 +3,8 @@ beyla:
     data:
       discovery:
         services:
-          - namespace: ""
-            pod_name_pattern: ".*"
+          kubernetes:
+            enabled: true
       attributes:
         kubernetes:
           metadata:
