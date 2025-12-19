@@ -51,7 +51,7 @@ mimir-distributed:
       size: 20Gi
     resources:
       limits:
-        memory: 2.1Gi
+        memory: 3Gi
       requests:
         cpu: 1
         memory: 1.5Gi
@@ -62,7 +62,7 @@ mimir-distributed:
       limits:
         memory: 5.7Gi
       requests:
-        cpu: 2
+        cpu: 1
         memory: 4Gi
 
   ingester:
@@ -71,10 +71,10 @@ mimir-distributed:
     replicas: 3
     resources:
       limits:
-        memory: 12Gi
+        memory: 4Gi
       requests:
-        cpu: 3.5
-        memory: 8Gi
+        cpu: 1
+        memory: 2Gi
     topologySpreadConstraints: { }
     affinity:
       podAntiAffinity:
