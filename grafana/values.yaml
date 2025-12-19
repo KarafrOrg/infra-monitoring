@@ -49,7 +49,7 @@ grafana:
           editable: false
           isDefault: false
         - name: Pyroscope
-          type: pyroscope
+          type: grafana-pyroscope-datasource
           access: proxy
           url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: true
