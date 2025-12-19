@@ -30,7 +30,6 @@ mimir-distributed:
           endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
           secret_access_key: ${AWS_SECRET_ACCESS_KEY}
           s3forcepathstyle: true
-  configStorageType:
   alertmanager:
     persistentVolume:
       enabled: true
