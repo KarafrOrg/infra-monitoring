@@ -25,6 +25,7 @@ grafana:
   datasources:
     datasources.yaml:
       apiVersion: 1
+      version: 1
       datasources:
         - name: Prometheus
           type: prometheus
