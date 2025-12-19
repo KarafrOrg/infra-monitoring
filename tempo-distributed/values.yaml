@@ -7,7 +7,7 @@ tempo-distributed:
         endpoint: http://seaweedfs-s3.infra-storage.svc.cluster.local:8333
         region: us-east-1
         insecure: true
-        s3forcepathstyle: true
+        forcepathstyle: true
 
   compactor:
     extraEnvFrom:
