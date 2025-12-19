@@ -28,6 +28,7 @@ grafana:
       datasources:
         - name: Loki
           type: loki
+          uid: loki
           access: proxy
           url: http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local:80
           jsonData:
@@ -40,6 +41,7 @@ grafana:
           isDefault: false
         - name: Tempo
           type: tempo
+          uid: tempo
           access: proxy
           url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
           jsonData:
@@ -54,12 +56,14 @@ grafana:
         - name: Pyroscope
           type: grafana-pyroscope-datasource
           access: proxy
+          uid: pyroscope
           url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: false
           isDefault: false
         - name: Prometheus
           type: prometheus
           access: proxy
+          uid: prometheus
           url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
           isDefault: true
           editable: false
