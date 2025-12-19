@@ -35,7 +35,7 @@ grafana:
               metrics-collector: prometheus
               Lines: 1000
             minInterval: 1s
-          editable: true
+          editable: false
           isDefault: false
         - name: Tempo
           type: tempo
@@ -51,7 +51,7 @@ grafana:
           type: grafana-pyroscope-datasource
           access: proxy
           url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
-          editable: true
+          editable: false
           isDefault: false
         - name: Prometheus
           type: prometheus
