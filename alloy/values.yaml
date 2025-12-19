@@ -1,6 +1,7 @@
 alloy:
   alloy:
     securityContext:
+      hostPID: true
       privileged: true
       capabilities:
         add:
