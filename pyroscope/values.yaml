@@ -23,3 +23,5 @@ pyroscope:
     enabled: false
   alloy:
     enabled: false
+  serviceMonitor:
+    enabled: true

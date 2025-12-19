@@ -91,3 +91,7 @@ grafana:
       label: monitoring.coreos.com/grafana-dashboard
       labelValue: 'true'
       enabled: true
+
+  serviceMonitor:
+    enabled: true
+

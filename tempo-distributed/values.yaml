@@ -131,3 +131,6 @@ tempo-distributed:
     defaults:
       metrics_generator:
         processors: [ service-graphs, span-metrics, local-blocks ]
+  metaMonitoring:
+    serviceMonitor:
+      enabled: true
