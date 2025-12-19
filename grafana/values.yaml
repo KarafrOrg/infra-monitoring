@@ -26,6 +26,14 @@ grafana:
     datasources.yaml:
       apiVersion: 1
       datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          uid: prometheus
+          url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
+          isDefault: true
+          editable: false
+
         - name: Loki
           type: loki
           uid: loki
@@ -39,6 +47,7 @@ grafana:
             httpMethod: GET
           editable: false
           isDefault: false
+
         - name: Tempo
           type: tempo
           uid: tempo
@@ -53,6 +62,7 @@ grafana:
               datasourceUid: prometheus
           editable: false
           isDefault: false
+
         - name: Pyroscope
           type: grafana-pyroscope-datasource
           access: proxy
@@ -60,13 +70,6 @@ grafana:
           url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: false
           isDefault: false
-        - name: Prometheus
-          type: prometheus
-          access: proxy
-          uid: prometheus
-          url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
-          isDefault: true
-          editable: false
 
   grafana.ini:
     server:
