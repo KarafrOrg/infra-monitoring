@@ -1,0 +1,43 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+# YAML files (Helm manifests, values.yaml)
+[*.{yaml,yml}]
+indent_size = 2
+trim_trailing_whitespace = true
+
+# Helm template files
+[**/templates/*.gotmpl.*]
+indent_size = 2
+trim_trailing_whitespace = false
+
+# Go template inside YAML (most Helm templates)
+[templates/**/*.{yaml,yml}]
+indent_size = 2
+trim_trailing_whitespace = false
+
+# values.yaml often edited manually
+[values.yaml]
+indent_size = 2
+trim_trailing_whitespace = true
+
+# JSON (sometimes used in Helm)
+[*.json]
+indent_size = 2
+
+# Shell scripts (helm hooks, CI)
+[*.sh]
+indent_size = 2
+
+# Markdown (README.md)
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off

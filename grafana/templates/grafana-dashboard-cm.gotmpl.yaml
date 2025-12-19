@@ -1,0 +1,15 @@
+{{ $dashboardLabelName := index .Values "grafana" "sidecar" "dashboards" "label" }}
+{{ $dashboardLabelValue := index .Values "grafana" "sidecar" "dashboards" "labelValue" }}
+{{ $root := . }}
+
+{{ range $path, $_ := .Files.Glob "dashboards/*.json" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ base $path }}
+  labels:
+    {{ $dashboardLabelName }}: {{ $dashboardLabelValue | quote }}
+data:
+  {{ base $path }}: {{ $root.Files.Get $path | toJson }}
+{{ end }}
