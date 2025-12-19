@@ -59,6 +59,10 @@ tempo-distributed:
       limits:
         cpu: 500m
         memory: 512Mi
+    config:
+      storage:
+        remote_write:
+          - http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
