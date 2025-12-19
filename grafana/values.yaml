@@ -30,6 +30,7 @@ grafana:
           type: loki
           access: proxy
           url: http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local:80
+          uid: loki
           jsonData:
             maxmatchLabels:
               metrics-collector: prometheus
