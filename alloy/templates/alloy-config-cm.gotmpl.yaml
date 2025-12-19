@@ -48,7 +48,7 @@ data:
       endpoint = "0.0.0.0:4137/metrics"
     }
 
-    otelcol.processor.batch "metrics_batch" {
+      otelcol.processor.batch "metrics_batch" {
       send_batch_size = 1024
       timeout         = "5s"
 
@@ -57,13 +57,16 @@ data:
       }
     }
 
-    service {
-      pipelines {
-        metrics {
-          receivers  = [otelcol.receiver.otlp.default.input]
-          processors = [otelcol.processor.batch.metrics_batch.input]
-          exporters  = [otelcol.exporter.prometheus.beyla_metrics.input]
-        }
+    otelcol.receiver.otlp "default" {
+      grpc {
+        endpoint = "0.0.0.0:4317"
+      }
+      http {
+        endpoint = "0.0.0.0:4318"
+      }
+      output {
+        metrics = [otelcol.processor.batch.metrics_batch.input]
+        traces  = [otelcol.processor.batch.default.input]
       }
     }
 
