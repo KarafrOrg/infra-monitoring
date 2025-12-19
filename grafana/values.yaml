@@ -62,7 +62,6 @@ grafana:
         - name: Pyroscope
           type: grafana-pyroscope-datasource
           access: proxy
-          uid: pyroscope
           url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: false
           isDefault: false
