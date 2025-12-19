@@ -20,8 +20,6 @@ grafana:
   persistence:
     enabled: true
     storageClassName: longhorn
-    accessModes:
-      - ReadWriteMany
     size: 10Gi
 
   datasources:
