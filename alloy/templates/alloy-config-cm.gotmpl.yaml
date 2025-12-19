@@ -5,9 +5,21 @@ metadata:
 data:
   config: |
     logging {
-      level  = "info"
+      level  = "info" # change to "debug" if needed
       format = "json"
     }
+
+    ############################
+    # Kubernetes Discovery
+    ############################
+
+    discovery.kubernetes "pods" {
+      role = "pod"
+    }
+
+    ############################
+    # Traces → Tempo
+    ############################
 
     otelcol.receiver.otlp "default" {
       grpc {
@@ -16,6 +28,7 @@ data:
       http {
         endpoint = "0.0.0.0:4318"
       }
+
       output {
         traces = [otelcol.processor.batch.default.input]
       }
@@ -24,6 +37,7 @@ data:
     otelcol.processor.batch "default" {
       send_batch_size = 1024
       timeout         = "5s"
+
       output {
         traces = [otelcol.exporter.otlp.tempo.input]
       }
@@ -35,81 +49,95 @@ data:
       }
     }
 
+    ############################
+    # eBPF Profiling → Pyroscope
+    ############################
+
     discovery.relabel "pod_profiles" {
       targets = discovery.kubernetes.pods.targets
+
       rule {
         action = "drop"
-        regex = "Succeeded|Failed"
+        regex  = "Succeeded|Failed"
         source_labels = ["__meta_kubernetes_pod_phase"]
       }
+
+      # REQUIRED: service_name
       rule {
-        action = "replace"
-        regex = "(.*)@(.*)"
-        replacement = "ebpf/${1}/${2}"
-        separator = "@"
-        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+        action       = "replace"
+        replacement  = "ebpf/${1}/${2}"
+        source_labels = [
+          "__meta_kubernetes_namespace",
+          "__meta_kubernetes_pod_container_name"
+        ]
         target_label = "service_name"
       }
+
       rule {
         action = "labelmap"
-        regex = "__meta_kubernetes_pod_label_(.+)"
+        regex  = "__meta_kubernetes_pod_label_(.+)"
       }
-      rule {
-        action = "replace"
-        source_labels = ["__meta_kubernetes_namespace"]
-        target_label = "namespace"
-      }
-      rule {
-        action = "replace"
-        source_labels = ["__meta_kubernetes_pod_name"]
-        target_label = "pod"
-      }
-      rule {
-        action = "replace"
-        source_labels = ["__meta_kubernetes_pod_node_name"]
-        target_label = "node"
-      }
-      rule {
-        action = "replace"
-        source_labels = ["__meta_kubernetes_pod_container_name"]
-        target_label = "container"
-      }
-    }
 
-    pyroscope.ebpf "default" {
-      forward_to = [pyroscope.write.default.receiver]
-      targets = discovery.relabel.pod_profiles.output
-    }
-
-    pyroscope.write "default" {
-      endpoint {
-        url = "http://pyroscope.infra-monitoring.svc.cluster.local:4040"
-      }
-    }
-
-    // Logs
-    discovery.kubernetes "pods" {
-      role = "pod"
-    }
-
-    discovery.relabel "pod_logs" {
-      targets = discovery.kubernetes.pods.targets
-      rule {
-        source_labels = ["__meta_kubernetes_pod_name"]
-        target_label  = "pod"
-      }
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        target_label  = "node"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+    }
+
+    pyroscope.ebpf "default" {
+      targets    = discovery.relabel.pod_profiles.output
+      forward_to = [pyroscope.write.default.receiver]
+    }
+
+    pyroscope.write "default" {
+      endpoint {
+        # REQUIRED path
+        url = "http://pyroscope.infra-monitoring.svc.cluster.local:4040/ingest"
+      }
+    }
+
+    ############################
+    # Logs → Loki
+    ############################
+
+    discovery.relabel "pod_logs" {
+      targets = discovery.kubernetes.pods.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
         target_label  = "app"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "node"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_container_name"]
         target_label  = "container"
@@ -127,32 +155,41 @@ data:
       }
     }
 
-    // Metrics
+    ############################
+    # Metrics → Mimir
+    ############################
+
     discovery.relabel "prometheus" {
       targets = discovery.kubernetes.pods.targets
+
       rule {
         source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
         regex         = "^true$"
         action        = "keep"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_port"]
         action        = "replace"
         target_label  = "__meta_kubernetes_pod_container_port_number"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
         action        = "replace"
         target_label  = "__metrics_path__"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_name"]
         target_label  = "pod"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
         target_label  = "app"
@@ -161,8 +198,8 @@ data:
 
     prometheus.scrape "pod_metrics" {
       targets         = discovery.relabel.prometheus.output
-      forward_to      = [prometheus.remote_write.default.receiver]
       scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.default.receiver]
     }
 
     prometheus.remote_write "default" {
