@@ -31,3 +31,5 @@ beyla:
         endpoint: http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4317
       otel_traces_export:
         endpoint: http://infra-monitoring-alloy.infra-monitoring.svc.cluster.local:4318
+  serviceMonitor:
+    enabled: true

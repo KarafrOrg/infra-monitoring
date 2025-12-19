@@ -38,3 +38,5 @@ alloy:
   controller:
     replicas: 1
     hostPID: true
+  serviceMonitor:
+    enabled: true

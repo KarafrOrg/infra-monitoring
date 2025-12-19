@@ -78,3 +78,8 @@ loki:
       type: ClusterIP
   minio:
     enabled: false
+  monitoring:
+    serviceMonitor:
+      enabled: true
+    selfMonitoring:
+      enabled: true
