@@ -9,17 +9,9 @@ data:
       format = "json"
     }
 
-    ############################
-    # Kubernetes Discovery
-    ############################
-
     discovery.kubernetes "pods" {
       role = "pod"
     }
-
-    ############################
-    # Traces → Tempo
-    ############################
 
     otelcol.receiver.otlp "default" {
       grpc {
@@ -48,10 +40,6 @@ data:
         endpoint = "http://tempo.infra-monitoring.svc.cluster.local:4317"
       }
     }
-
-    ############################
-    # eBPF Profiling → Pyroscope
-    ############################
 
     discovery.relabel "pod_profiles" {
       targets = discovery.kubernetes.pods.targets
@@ -111,11 +99,7 @@ data:
       }
     }
 
-    ############################
-    # Logs → Loki
-    ############################
-
-    discovery.relabel "pod_logs" {
+   discovery.relabel "pod_logs" {
       targets = discovery.kubernetes.pods.targets
 
       rule {
@@ -154,10 +138,6 @@ data:
         url = "http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
       }
     }
-
-    ############################
-    # Metrics → Mimir
-    ############################
 
     discovery.relabel "prometheus" {
       targets = discovery.kubernetes.pods.targets
