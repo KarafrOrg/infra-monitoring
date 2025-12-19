@@ -41,7 +41,7 @@ mimir-distributed:
       limits:
         memory: 1.4Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 1Gi
     statefulSet:
       enabled: true
@@ -53,7 +53,7 @@ mimir-distributed:
       limits:
         memory: 3Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 1.5Gi
 
   distributor:
@@ -62,7 +62,7 @@ mimir-distributed:
       limits:
         memory: 5.7Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 4Gi
 
   ingester:
@@ -72,8 +72,9 @@ mimir-distributed:
     resources:
       limits:
         memory: 4Gi
+        cpu: 0.5
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 2Gi
     topologySpreadConstraints: { }
     affinity:
@@ -125,7 +126,7 @@ mimir-distributed:
       limits:
         memory: 5.6Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 4Gi
 
   query_frontend:
@@ -134,7 +135,7 @@ mimir-distributed:
       limits:
         memory: 2.8Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 2Gi
 
   ruler:
@@ -143,7 +144,7 @@ mimir-distributed:
       limits:
         memory: 2.8Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 2Gi
 
   store_gateway:
@@ -154,7 +155,7 @@ mimir-distributed:
       limits:
         memory: 2.1Gi
       requests:
-        cpu: 1
+        cpu: 0.5
         memory: 1.5Gi
     topologySpreadConstraints: { }
     affinity:
