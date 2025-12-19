@@ -5,7 +5,7 @@ metadata:
 data:
   config: |
     logging {
-      level  = "info" # change to "debug" if needed
+      level  = "info"
       format = "json"
     }
 
@@ -50,7 +50,6 @@ data:
         source_labels = ["__meta_kubernetes_pod_phase"]
       }
 
-      # REQUIRED: service_name
       rule {
         action       = "replace"
         replacement  = "ebpf/${1}/${2}"
@@ -94,12 +93,11 @@ data:
 
     pyroscope.write "default" {
       endpoint {
-        # REQUIRED path
         url = "http://pyroscope.infra-monitoring.svc.cluster.local:4040/ingest"
       }
     }
 
-   discovery.relabel "pod_logs" {
+    discovery.relabel "pod_logs" {
       targets = discovery.kubernetes.pods.targets
 
       rule {
