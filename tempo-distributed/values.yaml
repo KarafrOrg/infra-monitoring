@@ -46,7 +46,16 @@ tempo-distributed:
       limits:
         cpu: 1
         memory: 1Gi
-
+  metricsGenerator:
+    enabled: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    replicas: 2
   ingester:
     replicas: 6
     extraEnvFrom:
