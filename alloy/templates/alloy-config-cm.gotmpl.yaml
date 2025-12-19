@@ -93,7 +93,7 @@ data:
 
     pyroscope.write "default" {
       endpoint {
-        url = "http://pyroscope.infra-monitoring.svc.cluster.local:4040"
+        url = "http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040"
       }
     }
 
