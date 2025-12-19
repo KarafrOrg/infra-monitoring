@@ -75,7 +75,13 @@ tempo-distributed:
       limits:
         cpu: 1
         memory: 1Gi
-
+  traces:
+    otlp:
+      http:
+        enabled: true
+      grpc:
+        enabled: true
+        port: 4317
   queryFrontend:
     replicas: 3
     podManagementPolicy: OrderedReady
