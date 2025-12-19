@@ -17,7 +17,12 @@ grafana:
     existingSecret: grafana-admin-secret
     userKey: username
     passwordKey: password
-
+  persistence:
+    enabled: true
+    storageClassName: longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
   datasources:
     datasources.yaml:
       apiVersion: 1
