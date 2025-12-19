@@ -1,7 +1,6 @@
 alloy:
   alloy:
     securityContext:
-      hostPID: true
       privileged: true
       capabilities:
         add:
@@ -29,3 +28,4 @@ alloy:
     create: true
   controller:
     replicas: 1
+    hostPID: true
