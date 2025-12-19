@@ -48,7 +48,7 @@ tempo-distributed:
         memory: 1Gi
 
   ingester:
-    replicas: 3
+    replicas: 6
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
@@ -58,7 +58,7 @@ tempo-distributed:
         memory: 512Mi
       limits:
         cpu: 1
-        memory: 1Gi
+        memory: 2Gi
 
   querier:
     replicas: 3
