@@ -19,7 +19,7 @@ otelcol.processor.batch "metrics" {
   send_batch_size = 1024
   timeout         = "5s"
   output {
-    metrics = [prometheus.remote_write.mimir]
+    metrics = [prometheus.remote_write.mimir.receiver]
   }
 }
 
