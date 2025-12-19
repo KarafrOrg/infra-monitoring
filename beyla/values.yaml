@@ -5,7 +5,6 @@ beyla:
         services:
           - namespace: ""
             pod_name_pattern: ".*"
-            pod_name_exclude_pattern: ".*alloy.*"
       attributes:
         kubernetes:
           metadata:
