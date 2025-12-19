@@ -88,5 +88,3 @@ grafana:
       label: monitoring.coreos.com/grafana-dashboard
       labelValue: 'true'
       enabled: true
-
-http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local:8083
