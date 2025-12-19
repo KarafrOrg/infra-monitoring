@@ -31,17 +31,23 @@ data:
       }
     }
 
-    otelcol.exporter.prometheus "beyla_metrics" {
-      endpoint = "0.0.0.0:4137/metrics"
-    }
-
-      otelcol.processor.batch "metrics_batch" {
+    otelcol.processor.batch "beyla_metrics_batch" {
       send_batch_size = 1024
       timeout         = "5s"
-
       output {
-        metrics = [otelcol.exporter.prometheus.beyla_metrics.input]
+          metrics = [prometheus.remote_write.beyla.input]
+        }
+    }
+
+    prometheus.remote_write "beyla" {
+      endpoint {
+        url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
       }
+    }
+
+    otelcol.exporter.prometheus "beyla_metrics" {
+      listen_address = "0.0.0.0"
+      listen_port    = 4137
     }
 
     otelcol.receiver.otlp "default" {
@@ -52,7 +58,7 @@ data:
         endpoint = "0.0.0.0:4318"
       }
       output {
-        metrics = [otelcol.processor.batch.metrics_batch.input]
+        metrics = [otelcol.processor.batch.beyla_metrics_batch.input]
         traces  = [otelcol.processor.batch.default.input]
       }
     }
