@@ -4,10 +4,10 @@ tempo-distributed:
       backend: s3
       s3:
         bucket: tempo-traces
-        endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+        endpoint: http://seaweedfs-s3.infra-storage.svc.cluster.local:8333
         region: us-east-1
         insecure: true
-        forcepathstyle: true
+        s3forcepathstyle: true
 
   compactor:
     extraEnvFrom:
@@ -41,7 +41,6 @@ tempo-distributed:
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
-
     resources:
       requests:
         cpu: 250m
