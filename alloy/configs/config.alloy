@@ -19,7 +19,7 @@ otelcol.processor.batch "metrics" {
   send_batch_size = 1024
   timeout         = "5s"
   output {
-    metrics = [otelcol.exporter.prometheusremotewrite.mimir.input]
+    metrics = [prometheus.remote_write.mimir]
   }
 }
 
@@ -32,8 +32,10 @@ otelcol.exporter.otlp "tempo" {
   }
 }
 
-otelcol.exporter.prometheusremotewrite "mimir" {
-    endpoint = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
+prometheus.remote_write "mimir" {
+  endpoint {
+    url = "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
+  }
 }
 
 otelcol.receiver.otlp "default" {
