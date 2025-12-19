@@ -25,12 +25,41 @@ grafana:
   datasources:
     datasources.yaml:
       apiVersion: 1
-      version: 1
       datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local:80
+          jsonData:
+            maxmatchLabels:
+              metrics-collector: prometheus
+              Lines: 1000
+            minInterval: 1s
+            httpMethod: GET
+          editable: false
+          isDefault: false
+        - name: Tempo
+          type: tempo
+          access: proxy
+          url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
+          jsonData:
+            httpMethod: GET
+            maxmatchLabels:
+              metrics-collector: prometheus
+              Traces: 1000
+            serviceMap:
+              datasourceUid: prometheus
+          editable: false
+          isDefault: false
+        - name: Pyroscope
+          type: grafana-pyroscope-datasource
+          access: proxy
+          url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
+          editable: false
+          isDefault: false
         - name: Prometheus
           type: prometheus
           access: proxy
-          uid: prometheus
           url: http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/prometheus
           isDefault: true
           editable: false
