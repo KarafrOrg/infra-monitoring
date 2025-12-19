@@ -1,5 +1,5 @@
 grafana:
-  replicas: 3
+  replicas: 1
   networkPolicy:
     enabled: true
   ingress:
