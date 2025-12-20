@@ -222,7 +222,6 @@ mimir-distributed:
   metaMonitoring:
     serviceMonitor:
       enabled: true
-
   kafka:
     resources:
       limits:
@@ -234,3 +233,13 @@ mimir-distributed:
     persistence:
       enabled: true
       size: 50Gi
+  query_scheduler:
+    enabled: true
+    replicas: 1
+    resources:
+      limits:
+        memory: 128Mi
+        cpu: 50m
+      requests:
+        cpu: 10m
+        memory: 64Mi
