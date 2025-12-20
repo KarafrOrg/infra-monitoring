@@ -12,11 +12,11 @@ alloy:
           - BPF
     resources:
       limits:
-        cpu: 1000m
+        cpu: 250m
         memory: 4Gi
       requests:
-        cpu: 500m
-        memory: 512Mi
+        cpu: 125m
+        memory: 1Gi
     extraPorts:
       - name: otel-grpc
         port: 4317
