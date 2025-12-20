@@ -189,4 +189,4 @@ mimir-distributed:
   kafka:
     persistence:
       enabled: true
-      size: 30Gi
+      size: 50Gi
