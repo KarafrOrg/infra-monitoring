@@ -235,7 +235,7 @@ mimir-distributed:
       size: 50Gi
   query_scheduler:
     enabled: true
-    replicas: 1
+    replicas: 2
     resources:
       limits:
         memory: 128Mi
