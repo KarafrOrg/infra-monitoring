@@ -151,7 +151,7 @@ loki:
       enabled: true
     selfMonitoring:
       enabled: false
-  canary:
+  lokiCanary:
     resources:
       requests:
         cpu: 10m
