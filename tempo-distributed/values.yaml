@@ -84,6 +84,8 @@ tempo-distributed:
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
+    persistence:
+      size: 25Gi
     resources:
       requests:
         cpu: 250m
