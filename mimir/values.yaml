@@ -8,6 +8,8 @@ global:
 mimir-distributed:
   mimir:
     structuredConfig:
+      ingestion_rate: 30000
+      ingestion_burst_size: 600000
       alertmanager_storage:
         s3:
           bucket_name: mimir-ruler
