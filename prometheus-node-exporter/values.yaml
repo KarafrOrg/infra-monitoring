@@ -5,7 +5,7 @@ prometheus-node-exporter:
   resources:
     requests:
       cpu: 16m
-      memory: 128Mi
+      memory: 64Mi
     limits:
-      cpu: 64m
-      memory: 256Mi
+      cpu: 32m
+      memory: 128Mi
