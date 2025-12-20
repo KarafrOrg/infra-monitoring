@@ -97,11 +97,11 @@ tempo-distributed:
       size: 25Gi
     resources:
       requests:
-        cpu: 30m
+        cpu: 50m
         memory: 200Mi
       limits:
-        cpu: 100m
-        memory: 512Mi
+        cpu: 250m
+        memory: 1Gi
 
   querier:
     replicas: 3
