@@ -2,8 +2,15 @@ global:
   extraEnvFrom:
     - secretRef:
         name: loki-s3-creds
-
 loki:
+  chunksCache:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 3Gi
+      limits:
+        cpu: 100m
+        memory: 4Gi
   loki:
     schemaConfig:
       configs:
@@ -37,45 +44,106 @@ loki:
       volume_enabled: true
   deploymentMode: Distributed
   ingester:
-    replicas: 3 # To ensure data durability with replication
+    replicas: 3
     zoneAwareReplication:
       enabled: false
+    resources:
+      requests:
+        cpu: 60m
+        memory: 350Mi
+      limits:
+        cpu: 120m
+        memory: 700Mi
   querier:
-    replicas: 3 # Improve query performance via parallelism
+    replicas: 3
     maxUnavailable: 2
+    resources:
+      requests:
+        cpu: 50m
+        memory: 150Mi
+      limits:
+        cpu: 100m
+        memory: 300Mi
   queryFrontend:
     replicas: 2
     maxUnavailable: 1
+    resources:
+      requests:
+        cpu: 20m
+        memory: 100Mi
+      limits:
+        cpu: 40m
+        memory: 200Mi
   queryScheduler:
     replicas: 2
+    resources:
+      requests:
+        cpu: 10m
+        memory: 70Mi
+      limits:
+        cpu: 20m
+        memory: 140Mi
   distributor:
     replicas: 3
     maxUnavailable: 2
+    resources:
+      requests:
+        cpu: 70m
+        memory: 128Mi
+      limits:
+        cpu: 140m
+        memory: 256Mi
   compactor:
     replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 100m
+        memory: 512Mi
   indexGateway:
     replicas: 2
     maxUnavailable: 1
-
+    resources:
+      requests:
+        cpu: 20m
+        memory: 128Mi
+      limits:
+        cpu: 40m
+        memory: 256Mi
   bloomPlanner:
     replicas: 0
   bloomBuilder:
     replicas: 0
   bloomGateway:
     replicas: 0
-
   backend:
     replicas: 0
   read:
     replicas: 0
   write:
     replicas: 0
-
   singleBinary:
     replicas: 0
   gateway:
     service:
       type: ClusterIP
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 20m
+        memory: 64Mi
+  resultsCache:
+    resources:
+      requests:
+        cpu: 20m
+        memory: 40Mi
+      limits:
+        cpu: 40m
+        memory: 80Mi
   minio:
     enabled: false
   monitoring:
@@ -83,3 +151,11 @@ loki:
       enabled: true
     selfMonitoring:
       enabled: false
+  canary:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 24Mi
+      limits:
+        cpu: 20m
+        memory: 48Mi
