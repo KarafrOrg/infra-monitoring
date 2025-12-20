@@ -14,11 +14,11 @@ tempo-distributed:
           name: tempo-s3-creds
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
+        cpu: 20m
+        memory: 64Mi
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 100m
+        memory: 256Mi
   streamOverHTTPEnabled: true
   gateway:
     enabled: true
@@ -27,11 +27,11 @@ tempo-distributed:
           name: tempo-s3-creds
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
+        cpu: 10m
+        memory: 32Mi
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 50m
+        memory: 128Mi
   distributor:
     replicas: 3
     podManagementPolicy: OrderedReady
@@ -41,23 +41,23 @@ tempo-distributed:
           name: tempo-s3-creds
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
+        cpu: 30m
+        memory: 64Mi
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 100m
+        memory: 256Mi
   metricsGenerator:
     enabled: true
-    replicas: 2
+    replicas: 3
     processor:
       local_blocks:
         filter_server_spans: false
     resources:
       requests:
-        cpu: 100m
+        cpu: 50m
         memory: 256Mi
       limits:
-        cpu: 500m
+        cpu: 200m
         memory: 512Mi
     config:
       storage:
@@ -80,7 +80,7 @@ tempo-distributed:
       - secretRef:
           name: tempo-s3-creds
   ingester:
-    replicas: 6
+    replicas: 3
     extraEnvFrom:
       - secretRef:
           name: tempo-s3-creds
@@ -88,11 +88,11 @@ tempo-distributed:
       size: 25Gi
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
+        cpu: 30m
+        memory: 200Mi
       limits:
-        cpu: 1
-        memory: 2Gi
+        cpu: 100m
+        memory: 512Mi
 
   querier:
     replicas: 3
@@ -103,11 +103,11 @@ tempo-distributed:
           name: tempo-s3-creds
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
+        cpu: 20m
+        memory: 64Mi
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 100m
+        memory: 256Mi
   traces:
     otlp:
       http:
@@ -124,11 +124,11 @@ tempo-distributed:
           name: tempo-s3-creds
     resources:
       requests:
-        cpu: 250m
-        memory: 512Mi
+        cpu: 10m
+        memory: 32Mi
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 50m
+        memory: 128Mi
   overrides:
     defaults:
       metrics_generator:
