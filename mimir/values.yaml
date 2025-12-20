@@ -43,10 +43,11 @@ mimir-distributed:
     replicas: 2
     resources:
       limits:
-        memory: 1.4Gi
+        memory: 128Mi
+        cpu: 50m
       requests:
-        cpu: 0.5
-        memory: 1Gi
+        cpu: 10m
+        memory: 64Mi
     statefulSet:
       enabled: true
 
@@ -55,19 +56,21 @@ mimir-distributed:
       size: 20Gi
     resources:
       limits:
-        memory: 3Gi
+        memory: 256Mi
+        cpu: 100m
       requests:
-        cpu: 0.5
-        memory: 1.5Gi
+        cpu: 20m
+        memory: 128Mi
 
   distributor:
     replicas: 2
     resources:
       limits:
-        memory: 5.7Gi
+        memory: 256Mi
+        cpu: 100m
       requests:
-        cpu: 0.5
-        memory: 4Gi
+        cpu: 50m
+        memory: 128Mi
 
   ingester:
     persistentVolume:
@@ -75,11 +78,11 @@ mimir-distributed:
     replicas: 3
     resources:
       limits:
-        memory: 4Gi
-        cpu: 0.5
+        memory: 1.2Gi
+        cpu: 200m
       requests:
-        cpu: 0.5
-        memory: 2Gi
+        cpu: 100m
+        memory: 600Mi
     topologySpreadConstraints: { }
     affinity:
       podAntiAffinity:
@@ -98,18 +101,46 @@ mimir-distributed:
   chunks-cache:
     enabled: true
     replicas: 3
+    resources:
+      limits:
+        memory: 64Mi
+        cpu: 50m
+      requests:
+        cpu: 10m
+        memory: 32Mi
 
   index-cache:
     enabled: true
     replicas: 3
+    resources:
+      limits:
+        memory: 64Mi
+        cpu: 50m
+      requests:
+        cpu: 10m
+        memory: 32Mi
 
   metadata-cache:
     enabled: true
     replicas: 3
+    resources:
+      limits:
+        memory: 64Mi
+        cpu: 50m
+      requests:
+        cpu: 10m
+        memory: 32Mi
 
   results-cache:
     enabled: true
     replicas: 3
+    resources:
+      limits:
+        memory: 128Mi
+        cpu: 50m
+      requests:
+        cpu: 10m
+        memory: 64Mi
 
   minio:
     enabled: false
@@ -128,28 +159,31 @@ mimir-distributed:
     replicas: 1
     resources:
       limits:
-        memory: 5.6Gi
+        memory: 256Mi
+        cpu: 100m
       requests:
-        cpu: 0.5
-        memory: 4Gi
+        cpu: 20m
+        memory: 128Mi
 
   query_frontend:
     replicas: 1
     resources:
       limits:
-        memory: 2.8Gi
+        memory: 256Mi
+        cpu: 100m
       requests:
-        cpu: 0.5
-        memory: 2Gi
+        cpu: 20m
+        memory: 128Mi
 
   ruler:
     replicas: 1
     resources:
       limits:
-        memory: 2.8Gi
+        memory: 256Mi
+        cpu: 100m
       requests:
-        cpu: 0.5
-        memory: 2Gi
+        cpu: 20m
+        memory: 128Mi
 
   store_gateway:
     persistentVolume:
@@ -157,10 +191,11 @@ mimir-distributed:
     replicas: 3
     resources:
       limits:
-        memory: 2.1Gi
+        memory: 512Mi
+        cpu: 100m
       requests:
-        cpu: 0.5
-        memory: 1.5Gi
+        cpu: 20m
+        memory: 256Mi
     topologySpreadConstraints: { }
     affinity:
       podAntiAffinity:
@@ -179,10 +214,11 @@ mimir-distributed:
     replicas: 1
     resources:
       limits:
-        memory: 731Mi
+        memory: 128Mi
+        cpu: 50m
       requests:
-        cpu: 1
-        memory: 512Mi
+        cpu: 10m
+        memory: 64Mi
   metaMonitoring:
     serviceMonitor:
       enabled: true
@@ -190,10 +226,11 @@ mimir-distributed:
   kafka:
     resources:
       limits:
-        memory: 1Gi
-      requests:
-        cpu: 0.5
         memory: 512Mi
+        cpu: 100m
+      requests:
+        cpu: 50m
+        memory: 256Mi
     persistence:
       enabled: true
       size: 50Gi
