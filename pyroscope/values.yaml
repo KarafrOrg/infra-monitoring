@@ -3,10 +3,10 @@ pyroscope:
     replicaCount: 3
     resources:
       requests:
-        cpu: 250m
+        cpu: 64m
         memory: 512Mi
       limits:
-        cpu: 1
+        cpu: 128m
         memory: 1Gi
     config: |
       storage:
