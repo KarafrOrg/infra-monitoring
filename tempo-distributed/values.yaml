@@ -46,6 +46,15 @@ tempo-distributed:
       limits:
         cpu: 100m
         memory: 256Mi
+  memcached:
+    enabled: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 64m
+        memory: 1Gi
   metricsGenerator:
     enabled: true
     replicas: 2
