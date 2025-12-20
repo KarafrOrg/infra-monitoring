@@ -183,3 +183,7 @@ mimir-distributed:
     serviceMonitor:
       enabled: true
 
+  kafka:
+    persistence:
+      enabled: true
+      size: 30Gi
