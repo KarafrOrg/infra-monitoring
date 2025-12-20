@@ -15,10 +15,10 @@ tempo-distributed:
     resources:
       requests:
         cpu: 20m
-        memory: 64Mi
+        memory: 256Mi
       limits:
         cpu: 100m
-        memory: 256Mi
+        memory: 2Gi
   streamOverHTTPEnabled: true
   gateway:
     enabled: true
