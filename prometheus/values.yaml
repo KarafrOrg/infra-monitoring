@@ -21,7 +21,7 @@ kube-prometheus-stack:
         volumeClaimTemplate:
           spec:
             accessModes:
-              - ReadWriteOnce"
+              - ReadWriteOnce
             resources:
               requests:
                 storage: 50Gi
