@@ -36,7 +36,7 @@ otelcol.exporter.otlp "tempo" {
   }
 }
 
-prometheus.remote_write "mimir" {
+prometheus.remote_write "prometheus" {
   endpoint {
     url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local/api/v1/push"
   }
