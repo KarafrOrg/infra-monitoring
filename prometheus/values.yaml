@@ -1,0 +1,59 @@
+kube-prometheus-stack:
+  prometheusOperator:
+    enabled: true
+
+  prometheus:
+    enabled: true
+    prometheusSpec:
+      replicas: 2
+      retention: 7d
+      scrapeInterval: 30s
+      evaluationInterval: 30s
+
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce"
+            resources:
+              requests:
+                storage: 50Gi
+  alertmanager:
+    enabled: true
+    alertmanagerSpec:
+      replicas: 2
+
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+
+      storage:
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+
+  kubeStateMetrics:
+    enabled: true
+
+  defaultRules:
+    create: true
+
+  grafana:
+    enabled: false
+
+  nodeExporter:
+    enabled: false

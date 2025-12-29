@@ -1,0 +1,143 @@
+tempo:
+  replicas: 1
+
+  tempo:
+    metricsGenerator:
+      enabled: true
+      remoteWriteUrl: "http://infra-monitoring-mimir-gateway.infra-monitoring.svc.cluster.local/api/v1/push"
+      processor:
+        service_graphs:
+          dimensions: [ ]
+        span_metrics:
+          dimensions: [ ]
+        local_blocks:
+          filter_server_spans: false
+
+    storage:
+      trace:
+        backend: s3
+        s3:
+          bucket: tempo-traces
+          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          region: us-east-1
+          insecure: true
+          forcepathstyle: true
+
+    # Retention and compaction
+    compactor:
+      compaction:
+        block_retention: 168h  # 7 days
+
+    # Ingester configuration
+    ingester:
+      max_block_duration: 10m
+      complete_block_timeout: 15m
+      flush_check_period: 5s
+      trace_idle_period: 10s
+
+    # Receivers configuration
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318
+          grpc:
+            endpoint: 0.0.0.0:4317
+      jaeger:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:14250
+          thrift_http:
+            endpoint: 0.0.0.0:14268
+          thrift_compact:
+            endpoint: 0.0.0.0:6831
+          thrift_binary:
+            endpoint: 0.0.0.0:6832
+      zipkin:
+        endpoint: 0.0.0.0:9411
+
+    # Query configuration
+    querier:
+      max_concurrent_queries: 20
+      frontend_worker:
+        frontend_address: tempo:9095
+
+    # Override configuration
+    overrides:
+      defaults:
+        metrics_generator:
+          processors: [ service-graphs, span-metrics, local-blocks ]
+
+  # Resource configuration for homelab
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 2Gi
+
+  # Persistent storage for WAL and blocks
+  persistence:
+    enabled: true
+    size: 30Gi
+    storageClassName: longhorn
+
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 3100
+
+  # Enable OTLP receivers
+  traces:
+    otlp:
+      http:
+        enabled: true
+      grpc:
+        enabled: true
+    jaeger:
+      thriftHttp:
+        enabled: true
+      grpc:
+        enabled: true
+    zipkin:
+      enabled: true
+
+  # S3 credentials from external secret
+  env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: tempo-s3-creds
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: tempo-s3-creds
+          key: AWS_SECRET_ACCESS_KEY
+
+  # Service monitor for Prometheus
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+
+  # Pod annotations
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3100"
+
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    fsGroup: 10001
+
+  # Topology spread for high availability (even in single replica mode)
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: tempo
+          app.kubernetes.io/instance: infra-monitoring-tempo
