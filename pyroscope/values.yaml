@@ -6,7 +6,7 @@ pyroscope:
         cpu: 64m
         memory: 512Mi
       limits:
-        cpu: 128m
+        cpu: 200m
         memory: 1Gi
     config: |
       storage:
