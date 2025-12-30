@@ -4,7 +4,7 @@ metadata:
   name: grafana-virtual-service
 spec:
   hosts:
-    - myapp.example.com
+    - grafana.karafra.net
   gateways:
     - infra-monitoring/grafana-ingress-gateway
   http:
