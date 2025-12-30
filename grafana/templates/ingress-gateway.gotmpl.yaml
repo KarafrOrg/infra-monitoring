@@ -22,4 +22,4 @@ spec:
         - grafana.karafra.net
       tls:
         mode: SIMPLE
-        credentialName: grafana-ingress-certificate
+        credentialName: grafana-tls
