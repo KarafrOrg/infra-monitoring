@@ -9,17 +9,6 @@ grafana:
     memory: 128Mi
   networkPolicy:
     enabled: true
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-    hosts:
-      - grafana.karafra.net
-    tls:
-      - hosts:
-          - grafana.karafra.net
-        secretName: grafana-tls
   admin:
     existingSecret: grafana-admin-secret
     userKey: username
