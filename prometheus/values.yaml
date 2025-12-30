@@ -15,6 +15,7 @@ kube-prometheus-stack:
 
       scrapeConfigSelector: {}
       scrapeConfigSelectorNilUsesHelmValues: false
+      enableRemoteWriteReceiver: true
       resources:
         requests:
           cpu: 100m
