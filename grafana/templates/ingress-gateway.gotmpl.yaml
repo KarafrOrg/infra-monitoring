@@ -22,4 +22,4 @@ spec:
         - grafana.karafra.net
       tls:
         mode: SIMPLE
-        credentialName: kubernetes-gateway://infra-monitoring/grafana-tls
+        credentialName: grafana-tls
