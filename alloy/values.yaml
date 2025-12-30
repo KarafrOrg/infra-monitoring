@@ -36,10 +36,11 @@ alloy:
   rbac:
     create: true
   controller:
-    type: deployment
     replicas: 1
     hostPID: true
     autoscaling:
-      enabled: false
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 5
   serviceMonitor:
     enabled: true
