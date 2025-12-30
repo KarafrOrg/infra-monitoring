@@ -3,7 +3,7 @@ kube-prometheus-stack:
     enabled: true
   prometheus:
     prometheusSpec:
-      replicas: 3
+      replicas: 1
       tsdb:
         outOfOrderTimeWindow: 5m
       enableRemoteWriteReceiver: true
