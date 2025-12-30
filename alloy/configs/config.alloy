@@ -135,7 +135,7 @@ loki.source.kubernetes "pod_logs" {
 
 loki.write "default" {
   endpoint {
-    url = "http://infra-monitoring-loki-distributed-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
+    url = "http://infra-monitoring-loki-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
   }
 }
 
