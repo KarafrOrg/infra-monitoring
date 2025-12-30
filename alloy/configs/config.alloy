@@ -139,44 +139,6 @@ loki.write "default" {
   }
 }
 
-discovery.relabel "prometheus" {
-  targets = discovery.kubernetes.pods.targets
-
-  rule {
-    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
-    regex            = "^true$"
-    action           = "keep"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_port"]
-    action        = "replace"
-    target_label  = "__meta_kubernetes_pod_container_port_number"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
-    action        = "replace"
-    target_label  = "__metrics_path__"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_pod_name"]
-    target_label  = "pod"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_namespace"]
-    target_label  = "namespace"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_pod_label_app"]
-    target_label  = "app"
-  }
-}
-
-prometheus.scrape "pod_metrics" {
-  targets         = discovery.relabel.prometheus.output
-  scrape_interval = "30s"
-  forward_to      = [prometheus.remote_write.default.receiver]
-}
-
 prometheus.remote_write "default" {
   endpoint {
     url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090/api/v1/write"
