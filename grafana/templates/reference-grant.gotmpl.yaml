@@ -2,7 +2,6 @@ apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: grafana-tls-reference-grant
-  namespace: infra-monitoring
 spec:
   from:
     - group: gateway.networking.k8s.io
