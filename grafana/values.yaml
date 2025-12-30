@@ -52,11 +52,11 @@ grafana:
           jsonData:
             httpMethod: GET
             maxmatchLabels:
-              metrics-collector: prometheus-default
+              metrics-collector: prometheus
               Traces: 1000
             serviceMap:
-              datasourceUid: prometheus-default
-          editable: false
+              datasourceUid: prometheus
+          editable: true
           isDefault: false
         - name: Pyroscope
           type: grafana-pyroscope-datasource
@@ -66,7 +66,6 @@ grafana:
           isDefault: false
         - name: Prometheus
           type: prometheus
-          uid: prometheus-default
           access: proxy
           url: http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090
           isDefault: true
