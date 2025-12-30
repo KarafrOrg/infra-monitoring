@@ -66,6 +66,7 @@ grafana:
           isDefault: false
         - name: Prometheus
           type: prometheus
+          uid: prometheus
           access: proxy
           url: http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090
           isDefault: true
