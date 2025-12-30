@@ -3,13 +3,18 @@ kube-prometheus-stack:
     enabled: true
 
   prometheus:
-    enabled: true
     prometheusSpec:
-      replicas: 1
-      retention: 7d
-      scrapeInterval: 30s
-      evaluationInterval: 30s
-      enableRemoteWriteReceiver: true
+      serviceMonitorSelector: {}
+      serviceMonitorSelectorNilUsesHelmValues: false
+
+      podMonitorSelector: {}
+      podMonitorSelectorNilUsesHelmValues: false
+
+      probeSelector: {}
+      probeSelectorNilUsesHelmValues: false
+
+      scrapeConfigSelector: {}
+      scrapeConfigSelectorNilUsesHelmValues: false
       resources:
         requests:
           cpu: 100m
