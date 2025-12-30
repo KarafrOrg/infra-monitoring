@@ -38,7 +38,7 @@ otelcol.exporter.otlp "tempo" {
 
 prometheus.remote_write "prometheus" {
   endpoint {
-    url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local/api/v1/push"
+    url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090/api/v1/push"
   }
 }
 
@@ -179,7 +179,7 @@ prometheus.scrape "pod_metrics" {
 
 prometheus.remote_write "default" {
   endpoint {
-    url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local/api/v1/push"
+    url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090/api/v1/push"
   }
 }
 
