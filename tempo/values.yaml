@@ -13,15 +13,6 @@ tempo:
         local_blocks:
           filter_server_spans: false
 
-    storage:
-      trace:
-        backend: s3
-        s3:
-          bucket: tempo-traces
-          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
-          region: us-east-1
-          insecure: true
-          forcepathstyle: true
 
     # Retention and compaction
     compactor:
