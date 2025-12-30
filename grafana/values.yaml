@@ -48,7 +48,7 @@ grafana:
         - name: Tempo
           type: tempo
           access: proxy
-          url: http://infra-monitoring-tempo-distributed-query-frontend.infra-monitoring.svc.cluster.local:3200
+          url: http://infra-monitoring-tempo.infra-monitoring.svc.cluster.local:3200
           jsonData:
             httpMethod: GET
             maxmatchLabels:
