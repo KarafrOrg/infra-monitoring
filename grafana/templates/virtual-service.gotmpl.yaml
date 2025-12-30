@@ -15,4 +15,4 @@ spec:
         - destination:
             host: infra-monitoring-grafana.infra-monitoring.svc.cluster.local
             port:
-              number: 80
+              number: 3000
