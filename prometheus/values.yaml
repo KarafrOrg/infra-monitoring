@@ -1,20 +1,11 @@
 kube-prometheus-stack:
   prometheusOperator:
     enabled: true
-
   prometheus:
     prometheusSpec:
-      serviceMonitorSelector: {}
-      serviceMonitorSelectorNilUsesHelmValues: false
-
-      podMonitorSelector: {}
-      podMonitorSelectorNilUsesHelmValues: false
-
-      probeSelector: {}
-      probeSelectorNilUsesHelmValues: false
-
-      scrapeConfigSelector: {}
-      scrapeConfigSelectorNilUsesHelmValues: false
+      replicas: 3
+      tsdb:
+        outOfOrderTimeWindow: 5m
       enableRemoteWriteReceiver: true
       resources:
         requests:
