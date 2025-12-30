@@ -1,17 +1,21 @@
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: ReferenceGrant
-metadata:
-  name: grafana-tls-reference-grant
-spec:
-  from:
-    - group: networking.istio.io
-      kind: Gateway
-      namespace: infra-network
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      namespace: infra-network
-  to:
-    - group: ""
-      kind: Secret
-      name: grafana-tls
+# ReferenceGrant is not needed when Gateway and Secret are in the same namespace
+# This file is kept for reference but won't be applied
+#
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: ReferenceGrant
+# metadata:
+#   name: grafana-tls-reference-grant
+#   namespace: infra-monitoring
+# spec:
+#   from:
+#     - group: networking.istio.io
+#       kind: Gateway
+#       namespace: infra-network
+#     - group: gateway.networking.k8s.io
+#       kind: Gateway
+#       namespace: infra-network
+#   to:
+#     - group: ""
+#       kind: Secret
+#       name: grafana-tls
 
