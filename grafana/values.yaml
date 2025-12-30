@@ -64,7 +64,7 @@ grafana:
     server:
       root_url: https://grafana.karafra.net
     auth:
-      disable_login_form: true
+      disable_login_form: false
     auth.github:
       enabled: true
       client_id: ${GITHUB_CLIENT_ID}
