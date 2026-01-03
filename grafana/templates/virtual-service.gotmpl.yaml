@@ -6,7 +6,7 @@ spec:
   hosts:
     - grafana.karafra.net
   gateways:
-    - infra-monitoring/grafana-ingress-gateway
+    - infra-network/public-ingress-gateway
   http:
     - match:
         - uri:
