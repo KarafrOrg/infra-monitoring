@@ -175,6 +175,8 @@ thanos:
       accessModes:
         - ReadWriteOnce
     tsdbRetention: 2h
+    extraFlags:
+      - --receive.out-of-order-timewindow=2h
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
