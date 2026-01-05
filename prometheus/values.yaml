@@ -56,6 +56,10 @@ kube-prometheus-stack:
     enabled: false
 
 thanos:
+  image:
+    registry: docker.io
+    repository: thanosio/thanos
+    tag: main-2025-12-31-dbd156d
   query:
     replicaCount: 2
     resources:
