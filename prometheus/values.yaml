@@ -160,7 +160,7 @@ thanos:
     enabled: true
   receive:
     enabled: true
-    mode: dual-mode
+    mode: standalone
     replicaCount: 2
     resources:
       requests:
@@ -190,25 +190,3 @@ thanos:
       region: us-east-1
       insecure: true
       bucket_lookup_type: path
-  receiveDistributor:
-    replicaCount: 2
-    enabled: true
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-      limits:
-        memory: 1Gi
-        cpu: 400m
-    updateStrategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 1
-        maxUnavailable: 0
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: receive-distributor
