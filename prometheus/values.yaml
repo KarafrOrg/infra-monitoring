@@ -179,7 +179,6 @@ thanos:
       - --tsdb.out-of-order.time-window=2h
       - --tsdb.max-exemplars=100000
       - --tsdb.wal-compression
-      - --log.level=warn
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
