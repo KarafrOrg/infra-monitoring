@@ -25,7 +25,7 @@ grafana:
         - name: Loki
           type: loki
           access: proxy
-          url: http://infra-monitoring-loki-gateway.infra-monitoring.svc.cluster.local:80
+          url: http://loki-gateway.infra-monitoring.svc.cluster.local:80
           jsonData:
             maxmatchLabels:
               metrics-collector: prometheus
@@ -37,7 +37,7 @@ grafana:
         - name: Tempo
           type: tempo
           access: proxy
-          url: http://infra-monitoring-tempo.infra-monitoring.svc.cluster.local:3200
+          url: http://tempo.infra-monitoring.svc.cluster.local:3200
           jsonData:
             httpMethod: GET
             maxmatchLabels:
@@ -50,13 +50,13 @@ grafana:
         - name: Pyroscope
           type: grafana-pyroscope-datasource
           access: proxy
-          url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
+          url: http://pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: false
           isDefault: false
         - name: Prometheus
           type: prometheus
           access: proxy
-          url: http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090
+          url: http://prometheus-operated.infra-monitoring.svc.cluster.local:9090
           isDefault: true
           editable: false
 

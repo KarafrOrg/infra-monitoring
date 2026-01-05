@@ -16,7 +16,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: infra-monitoring-grafana
+        - name: grafana
           group: ''
           kind: Service
           port: 80

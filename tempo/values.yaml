@@ -4,7 +4,7 @@ tempo:
   tempo:
     metricsGenerator:
       enabled: true
-      remoteWriteUrl: "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090/api/v1/write"
+      remoteWriteUrl: "http://prometheus-operated.infra-monitoring.svc.cluster.local:9090/api/v1/write"
       processor:
         service_graphs:
           dimensions: [ ]
@@ -133,4 +133,4 @@ tempo:
       labelSelector:
         matchLabels:
           app.kubernetes.io/name: tempo
-          app.kubernetes.io/instance: infra-monitoring-tempo
+          app.kubernetes.io/instance: tempo

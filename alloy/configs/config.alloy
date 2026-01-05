@@ -29,7 +29,7 @@ otelcol.exporter.prometheus "beyla" {
 
 otelcol.exporter.otlp "tempo" {
   client {
-    endpoint = "http://infra-monitoring-tempo.infra-monitoring.svc.cluster.local:4317"
+    endpoint = "http://tempo.infra-monitoring.svc.cluster.local:4317"
     tls {
       insecure = true
     }
@@ -38,7 +38,7 @@ otelcol.exporter.otlp "tempo" {
 
 prometheus.remote_write "prometheus" {
   endpoint {
-    url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090/api/v1/write"
+    url = "http://prometheus-operated.infra-monitoring.svc.cluster.local:9090/api/v1/write"
   }
 }
 
@@ -100,7 +100,7 @@ pyroscope.ebpf "default" {
 
 pyroscope.write "default" {
   endpoint {
-    url = "http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040"
+    url = "http://pyroscope.infra-monitoring.svc.cluster.local:4040"
   }
 }
 
@@ -135,7 +135,7 @@ loki.source.kubernetes "pod_logs" {
 
 loki.write "default" {
   endpoint {
-    url = "http://infra-monitoring-loki-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
+    url = "http://loki-gateway.infra-monitoring.svc.cluster.local/loki/api/v1/push"
   }
 }
 
@@ -179,7 +179,7 @@ prometheus.scrape "pod_metrics" {
 
 prometheus.remote_write "default" {
   endpoint {
-    url = "http://infra-monitoring-prometheu-prometheus.infra-monitoring.svc.cluster.local:9090/api/v1/write"
+    url = "http://prometheus-operated.infra-monitoring.svc.cluster.local:9090/api/v1/write"
   }
 }
 
