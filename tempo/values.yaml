@@ -86,7 +86,7 @@ tempo:
   # Persistent storage for WAL
   persistence:
     enabled: true
-    size: 10Gi
+    size: 30Gi
     storageClassName: longhorn
 
   # Service configuration
