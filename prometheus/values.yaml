@@ -161,13 +161,13 @@ thanos:
   receive:
     enabled: true
     mode: standalone
-    replicaCount: 2
+    replicaCount: 1
     resources:
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 2Gi
       limits:
-        memory: 1Gi
+        memory: 3Gi
         cpu: 400m
     persistence:
       enabled: true
