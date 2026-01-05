@@ -56,7 +56,7 @@ grafana:
         - name: Prometheus
           type: prometheus
           access: proxy
-          url: http://prometheus-thanos-receive.infra-monitoring.svc.cluster.local:19291/api/v1/write
+          url: http://prometheus-thanos-query-frontend.infra-monitoring.svc.cluster.local:9090
           isDefault: true
           editable: false
 
