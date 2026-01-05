@@ -83,10 +83,10 @@ tempo:
       cpu: 500m
       memory: 2Gi
 
-  # Persistent storage for WAL and blocks
+  # Persistent storage for WAL
   persistence:
     enabled: true
-    size: 30Gi
+    size: 10Gi
     storageClassName: longhorn
 
   # Service configuration
