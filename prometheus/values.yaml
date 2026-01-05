@@ -145,7 +145,13 @@ thanos:
       size: 8Gi
     alertmanagers:
       - http://alertmanager-operated.infra-monitoring.svc.cluster.local:9093
-
+    config: |-
+      groups:
+        - name: "metamonitoring"
+          interval: 30s
+          rules:
+            - alert: "PrometheusDown"
+              expr: absent(up{prometheus="monitoring/prometheus-operator"})
   bucketweb:
     enabled: true
 
