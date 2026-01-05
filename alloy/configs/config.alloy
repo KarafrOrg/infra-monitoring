@@ -180,6 +180,19 @@ prometheus.scrape "pod_metrics" {
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus-thanos-receive.infra-monitoring.svc.cluster.local:19291/api/v1/receive"
+
+    send_exemplars = false
+    send_native_histograms = false
+
+    queue_config {
+      capacity = 10000
+      max_shards = 10
+      min_shards = 1
+      max_samples_per_send = 1000
+      batch_send_deadline = "5s"
+      min_backoff = "30ms"
+      max_backoff = "5s"
+    }
   }
 }
 

@@ -165,20 +165,21 @@ thanos:
     resources:
       requests:
         cpu: 500m
-        memory: 4Gi
+        memory: 2Gi
       limits:
-        memory: 6Gi
+        memory: 4Gi
         cpu: 1000m
     persistence:
       enabled: true
       size: 50Gi
       accessModes:
         - ReadWriteOnce
-    tsdbRetention: 6h
+    tsdbRetention: 2h
     extraFlags:
       - --tsdb.out-of-order.time-window=2h
-      - --tsdb.max-exemplars=100000
+      - --tsdb.no-lockfile
       - --tsdb.wal-compression
+      - --receive.default-tenant-id=default-tenant
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
