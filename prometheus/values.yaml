@@ -168,6 +168,10 @@ thanos:
       limits:
         memory: 1Gi
         cpu: 400m
+    persistence:
+      enabled: true
+      size: 20Gi
+    tsdbRetention: 2h
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
