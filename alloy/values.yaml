@@ -29,7 +29,7 @@ alloy:
     configMap:
       create: false
       key: 'config.alloy'
-      name: infra-monitoring-alloy-homelab-monitoring-config
+      name: '{{ .Release.Name }}-homelab-monitoring-config'
   serviceAccount:
     create: true
     name: alloy
