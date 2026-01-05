@@ -177,7 +177,6 @@ thanos:
     tsdbRetention: 6h
     extraFlags:
       - --tsdb.out-of-order.time-window=2h
-      - --receive.replication-factor=1
       - --tsdb.max-exemplars=100000
       - --tsdb.wal-compression
       - --log.level=warn
