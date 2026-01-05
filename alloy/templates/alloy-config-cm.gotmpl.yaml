@@ -1,6 +1,6 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ include "alloy.fullname" . }}-config
+  name: {{ .Values.alloy.alloy.configMap.name }}-config
 data:
 {{ (.Files.Glob "configs/config.alloy").AsConfig | indent 2  }}
