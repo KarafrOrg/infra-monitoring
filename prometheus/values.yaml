@@ -105,9 +105,7 @@ thanos:
       limits:
         memory: 1Gi
         cpu: 400m
-    extraEnvVarsSecret:
-      name: thanos-storegateway-objstore-config
-      key: thanos-storage-gateway-objstore-config
+    extraEnvVarsSecret: thanos-storegateway-objstore-config
     persistence:
       enabled: true
       size: 8Gi
