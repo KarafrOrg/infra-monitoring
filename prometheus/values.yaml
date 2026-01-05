@@ -158,6 +158,9 @@ thanos:
               expr: absent(up{prometheus="monitoring/prometheus-operator"})
   bucketweb:
     enabled: true
+  receive:
+    enabled: true
+    mode: dual-mode
 
   objstoreConfig: |-
     type: s3
