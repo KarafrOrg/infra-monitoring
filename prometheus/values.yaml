@@ -185,6 +185,7 @@ thanos:
       bucket_lookup_type: path
   receiveDistributor:
     replicaCount: 2
+    enabled: true
     resources:
       requests:
         cpu: 200m
