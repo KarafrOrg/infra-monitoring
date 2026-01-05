@@ -175,8 +175,6 @@ thanos:
       accessModes:
         - ReadWriteOnce
     tsdbRetention: 2h
-    extraFlags:
-      - --tsdb.path=/bitnami/thanos/receive/data
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
@@ -184,7 +182,6 @@ thanos:
         labelSelector:
           matchLabels:
             app.kubernetes.io/component: receive
-    extraEnvVarsSecret: thanos-storegateway-objstore-config
   objstoreConfig: |-
     type: s3
     config:
