@@ -54,3 +54,127 @@ kube-prometheus-stack:
 
   nodeExporter:
     enabled: false
+
+thanos:
+  query:
+    replicaCount: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+        cpu: 400m
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: query
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: query
+
+  storegateway:
+    replicaCount: 2
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: storegateway
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+        cpu: 400m
+    extraEnvVarsSecret:
+      name: thanos-storegateway-objstore-config
+      key: thanos-storage-gateway-objstore-config
+    persistence:
+      enabled: true
+      size: 8Gi
+
+  compactor:
+    enabled: true
+    updateStrategy:
+      type: RollingUpdate
+    persistence:
+      enabled: true
+      size: 8Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+        cpu: 200m
+
+  ruler:
+    enabled: true
+    replicaCount: 2
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: ruler
+    persistence:
+      enabled: true
+      size: 8Gi
+
+  bucketweb:
+    enabled: true
+
+  objstoreConfig: |-
+    type: s3
+    config:
+      bucket: prometheus-metrics
+      endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+      region: us-east-1
+      insecure: true
+      bucket_lookup_type: path
+  receiveDistributor:
+    replicaCount: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+        cpu: 400m
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: receive-distributor
