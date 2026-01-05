@@ -168,6 +168,13 @@ thanos:
       limits:
         memory: 1Gi
         cpu: 400m
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+        matchLabels:
+          app.kubernetes.io/component: receive
   objstoreConfig: |-
     type: s3
     config:
