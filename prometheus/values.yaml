@@ -161,6 +161,7 @@ thanos:
   receive:
     enabled: true
     mode: dual-mode
+    replicaCount: 2
     resources:
       requests:
         cpu: 200m
@@ -171,7 +172,11 @@ thanos:
     persistence:
       enabled: true
       size: 20Gi
+      accessModes:
+        - ReadWriteOnce
     tsdbRetention: 2h
+    extraFlags:
+      - --tsdb.path=/bitnami/thanos/receive/data
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
