@@ -4,7 +4,7 @@ tempo:
   tempo:
     metricsGenerator:
       enabled: true
-      remoteWriteUrl: "http://prometheus-operated.infra-monitoring.svc.cluster.local:9090/api/v1/write"
+      remoteWriteUrl: "http://prometheus-thanos-receive.infra-monitoring.svc.cluster.local:19291/api/v1/write"
       processor:
         service_graphs:
           dimensions: [ ]
