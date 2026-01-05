@@ -181,8 +181,6 @@ thanos:
       - --tsdb.max-exemplars=100000
       - --tsdb.wal-compression
       - --log.level=warn
-      - --http.grace-period=5m
-      - --receive.hashrings-file-refresh-interval=5m
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
