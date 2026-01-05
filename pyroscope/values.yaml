@@ -16,6 +16,7 @@ pyroscope:
           endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
           region: us-east-1
           insecure: true
+          force_path_style: true
     extraEnvFrom:
       - secretRef:
           name: pyroscope-s3-creds
