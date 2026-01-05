@@ -1,39 +1,26 @@
 kube-prometheus-stack:
+  kubeStateMetrics:
+    enabled: true
+  defaultRules:
+    create: true
+  grafana:
+    enabled: false
+  nodeExporter:
+    enabled: false
   prometheusOperator:
     enabled: true
   prometheus:
-    prometheusSpec:
-      replicas: 1
-      tsdb:
-        outOfOrderTimeWindow: 60m
-      enableRemoteWriteReceiver: true
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          memory: 3Gi
-
-      storageSpec:
-        volumeClaimTemplate:
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 50Gi
+    enabled: false
   alertmanager:
     enabled: true
     alertmanagerSpec:
       replicas: 2
-
       resources:
         requests:
           cpu: 50m
           memory: 128Mi
         limits:
           memory: 256Mi
-
       storage:
         volumeClaimTemplate:
           spec:
@@ -42,18 +29,6 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 2Gi
-
-  kubeStateMetrics:
-    enabled: true
-
-  defaultRules:
-    create: true
-
-  grafana:
-    enabled: false
-
-  nodeExporter:
-    enabled: false
 
 thanos:
   global:
