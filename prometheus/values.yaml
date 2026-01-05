@@ -187,6 +187,7 @@ thanos:
         labelSelector:
           matchLabels:
             app.kubernetes.io/component: receive
+    extraEnvVarsSecret: thanos-storegateway-objstore-config
   objstoreConfig: |-
     type: s3
     config:
