@@ -13,9 +13,10 @@ mimir-distributed:
             endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
             access_key_id: "${AWS_ACCESS_KEY_ID}"
             secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
-            s3_force_path_style: true
+            force_path_style: true
             http:
               insecure_skip_verify: true
+
   distributor:
     replicas: 2
     resources:
