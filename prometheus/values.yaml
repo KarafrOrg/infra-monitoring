@@ -1,173 +1,47 @@
-kube-prometheus-stack:
-  kubeStateMetrics:
-    enabled: true
-  defaultRules:
-    create: true
-  grafana:
-    enabled: false
-  nodeExporter:
-    enabled: false
-  prometheusOperator:
-    enabled: true
-  prometheus:
-    enabled: false
-  alertmanager:
-    enabled: true
-    alertmanagerSpec:
-      replicas: 2
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          memory: 256Mi
-      storage:
-        volumeClaimTemplate:
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 2Gi
-
-thanos:
-  global:
-    security:
-      allowInsecureImages: true
-  image:
-    registry: docker.io
-    repository: thanosio/thanos
-    tag: main-2025-12-31-dbd156d
-  query:
-    replicaCount: 2
+mimir-distributed:
+  distributor:
+    replicas: 2
     resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-      limits:
-        memory: 1Gi
-        cpu: 400m
-    updateStrategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 1
-        maxUnavailable: 0
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: query
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: query
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 250m
+      memory: 1Gi
 
-  storegateway:
-    replicaCount: 2
-    updateStrategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 1
-        maxUnavailable: 0
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: storegateway
+  ingester:
+    replicas: 3
     resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-      limits:
-        memory: 1Gi
-        cpu: 400m
-    extraEnvVarsSecret: thanos-storegateway-objstore-config
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1
+      memory: 2Gi
     persistence:
-      enabled: true
-      size: 8Gi
-
-  compactor:
     enabled: true
-    updateStrategy:
-      type: RollingUpdate
-    persistence:
-      enabled: true
-      size: 8Gi
+    size: 10Gi
+    storageClassName: longhorn
+
+  querier:
+    replicas: 2
     resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        memory: 512Mi
-        cpu: 200m
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 250m
+      memory: 1Gi
 
   ruler:
-    enabled: true
-    replicaCount: 2
-    updateStrategy:
-      type: RollingUpdate
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: ruler
-    persistence:
-      enabled: true
-      size: 8Gi
-    alertmanagers:
-      - http://alertmanager-operated.infra-monitoring.svc.cluster.local:9093
-    config: |-
-      groups:
-        - name: "metamonitoring"
-          interval: 30s
-          rules:
-            - alert: "PrometheusDown"
-              expr: absent(up{prometheus="monitoring/prometheus-operator"})
-  bucketweb:
-    enabled: true
-  receive:
-    enabled: true
-    mode: standalone
-    replicaCount: 1
+    replicas: 2
     resources:
-      requests:
-        cpu: 500m
-        memory: 2Gi
-      limits:
-        memory: 4Gi
-        cpu: 1000m
-    persistence:
-      enabled: true
-      size: 50Gi
-      accessModes:
-        - ReadWriteOnce
-    tsdbRetention: 2h
-    extraFlags:
-      - --tsdb.out-of-order.time-window=2h
-      - --tsdb.no-lockfile
-      - --tsdb.wal-compression
-      - --receive.default-tenant-id=default-tenant
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: receive
-    extraEnvVarsSecret: thanos-storegateway-objstore-config
-  objstoreConfig: |-
-    type: s3
-    config:
-      bucket: prometheus-metrics
-      endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
-      region: us-east-1
-      insecure: true
-      bucket_lookup_type: path
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 250m
+      memory: 1Gi
+
+  alertmanager:
+    enabled: false
