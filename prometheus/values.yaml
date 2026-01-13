@@ -1,4 +1,5 @@
 mimir-distributed:
+  fullnameOverride: mimir
   global:
     extraEnvFrom:
       - secretRef:
@@ -71,3 +72,5 @@ mimir-distributed:
       limits:
         cpu: 250m
         memory: 500Mi
+  minio:
+    enabled: false

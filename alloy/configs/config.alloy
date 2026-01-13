@@ -38,7 +38,7 @@ otelcol.exporter.otlp "tempo" {
 
 prometheus.remote_write "prometheus" {
   endpoint {
-    url = "http://infra-monitoring-prometheus-mimir-gateway.infra-monitoring.svc.cluster.local:80/api/v1/push"
+    url = "http://mimir-gateway.infra-monitoring.svc.cluster.local:80/api/v1/push"
   }
 }
 
@@ -179,7 +179,7 @@ prometheus.scrape "pod_metrics" {
 
 prometheus.remote_write "default" {
   endpoint {
-    url = "http://infra-monitoring-prometheus-mimir-gateway.infra-monitoring.svc.cluster.local:80/api/v1/push"
+    url = "http://mimir-gateway.infra-monitoring.svc.cluster.local:80/api/v1/push"
     queue_config {
       capacity = 10000
       max_shards = 10
