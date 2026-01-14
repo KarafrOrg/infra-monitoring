@@ -16,6 +16,16 @@ mimir-distributed:
             secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
             bucket_lookup_type: path
             insecure: true
+      ruler:
+        storage:
+          backend: s3
+          s3:
+            bucket_name: prometheus-metrics-ruler
+            endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+            access_key_id: "${AWS_ACCESS_KEY_ID}"
+            secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
+            bucket_lookup_type: path
+            insecure: true
   distributor:
     replicas: 2
     resources:
