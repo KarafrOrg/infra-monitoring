@@ -5,7 +5,6 @@ mimir-distributed:
       - secretRef:
           name: mimir-s3-creds-external-secret
   mimir:
-    config:
     structuredConfig:
       common:
         storage:
