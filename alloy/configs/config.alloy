@@ -185,7 +185,7 @@ prometheus.remote_write "default" {
       max_shards = 10
       min_shards = 1
       max_samples_per_send = 1000
-      batch_send_deadline = "5s"
+      batch_send_deadline = "1s"
       min_backoff = "30ms"
       max_backoff = "5s"
     }
