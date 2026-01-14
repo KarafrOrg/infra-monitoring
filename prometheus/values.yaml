@@ -68,10 +68,10 @@ mimir-distributed:
       limits:
         cpu: 1
         memory: 2Gi
-    persistence:
-      enabled: true
-      size: 50Gi
-      storageClassName: longhorn
+    persistentVolume:
+        enabled: true
+        size: 50Gi
+        storageClassName: longhorn
 
   querier:
     replicas: 2
