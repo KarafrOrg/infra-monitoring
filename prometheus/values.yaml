@@ -10,6 +10,7 @@ mimir-distributed:
   mimir:
     structuredConfig:
       limits:
+        out_of_order_time_window: 15m
         ingestion_rate: 50000
         ingestion_burst_size: 1000000
       common:
