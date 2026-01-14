@@ -56,7 +56,7 @@ grafana:
         - name: Prometheus
           type: prometheus
           access: proxy
-          url: http://mimir-gateway.infra-monitoring.svc.cluster.local:80/prometheys
+          url: http://mimir-gateway.infra-monitoring.svc.cluster.local:80/prometheus
           isDefault: true
           editable: false
 
