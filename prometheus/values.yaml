@@ -4,6 +4,9 @@ mimir-distributed:
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-creds-external-secret
+  kafka:
+    persistence:
+      size: 50Gi
   mimir:
     structuredConfig:
       limits:
