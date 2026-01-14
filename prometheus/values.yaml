@@ -4,7 +4,6 @@ mimir-distributed:
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-creds-external-secret
-  configStorageType:
   mimir:
     structuredConfig:
       common:
