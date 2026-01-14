@@ -37,7 +37,7 @@ grafana:
         - name: Tempo
           type: tempo
           access: proxy
-          url: http://tempo.infra-monitoring.svc.cluster.local:3200
+          url: http://infra-monitoring-tempo.infra-monitoring.svc.cluster.local:3200
           jsonData:
             httpMethod: GET
             maxmatchLabels:
@@ -50,13 +50,13 @@ grafana:
         - name: Pyroscope
           type: grafana-pyroscope-datasource
           access: proxy
-          url: http://pyroscope.infra-monitoring.svc.cluster.local:4040
+          url: http://infra-monitoring-pyroscope.infra-monitoring.svc.cluster.local:4040
           editable: false
           isDefault: false
         - name: Prometheus
           type: prometheus
           access: proxy
-          url: http://prometheus-thanos-query-frontend.infra-monitoring.svc.cluster.local:9090
+          url: http://mimir-gateway.infra-monitoring.svc.cluster.local:80/prometheys
           isDefault: true
           editable: false
 
