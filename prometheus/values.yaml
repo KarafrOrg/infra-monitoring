@@ -69,7 +69,7 @@ mimir-distributed:
         memory: 512Mi
       limits:
         cpu: 1
-        memory: 2Gi
+        memory: 4Gi
     persistentVolume:
         enabled: true
         size: 50Gi
