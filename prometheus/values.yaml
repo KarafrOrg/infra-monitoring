@@ -46,6 +46,7 @@ mimir-distributed:
     ingester_limits: # limits that each ingester replica enforces
       max_ingestion_rate: 50000
       max_series: 3000000
+      max_global_series_per_user: 3000000
       max_inflight_push_requests: 50000
     distributor_limits: # limits that each distributor replica enforces
       max_ingestion_rate: 50000
