@@ -2,7 +2,6 @@ object-buckets:
   buckets:
     - name: loki-logs-bucket
       storageClassName: rook-ceph-bucket
-      namespace: infra-storage
       labels:
         app: loki
       pushSecret:
