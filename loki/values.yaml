@@ -61,7 +61,6 @@ loki:
     storage:
       type: s3
       s3:
-        bucket_name: "${LOKI_BUCKET_NAME}"
         endpoint: "${LOKI_BUCKET_HOST}.cluster.local:${LOKI_BUCKET_PORT}"
         region: us-east-1
         insecure: true
