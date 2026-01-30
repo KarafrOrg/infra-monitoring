@@ -1,5 +1,5 @@
 storageBuckets:
-  - name: prometheus-metrics-bucket
+  - name: prometheus-metrics
     storageClassName: rook-ceph-bucket
     externalKeyPrefix: prometheus-metrics-
   - name: prometheus-metrics-ruler
