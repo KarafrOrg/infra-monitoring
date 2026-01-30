@@ -12,6 +12,21 @@ mimir-distributed:
           secretKeyRef:
             name: prometheus-metrics-bucket-claim
             key: AWS_SECRET_ACCESS_KEY
+      - name: PROMETHEUS_METRICS_BUCKET_HOST
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-metrics-bucket-claim
+            key: BUCKET_HOST
+      - name: PROMETHEUS_METRICS_BUCKET_PORT
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-metrics-bucket-claim
+            key: BUCKET_PORT
+      - name: PROMETHEUS_METRICS_BUCKET_NAME
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-metrics-bucket-claim
+            key: BUCKET_NAME
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-creds-external-secret
@@ -30,8 +45,8 @@ mimir-distributed:
         storage:
           backend: s3
           s3:
-            bucket_name: prometheus-metrics
-            endpoint: rook-ceph-rgw-primary-object-store.infra-storage.svc.cluster.local:80
+            bucket_name: "${PROMETHEUS_METRICS_BUCKET_NAME}"
+            endpoint: "${PROMETHEUS_METRICS_BUCKET_HOST}.cluster.local:${PROMETHEUS_METRICS_BUCKET_PORT}"
             access_key_id: "${PROMETHEUS_METRICS_AWS_ACCESS_KEY_ID}"
             secret_access_key: "${PROMETHEUS_METRICS_AWS_SECRET_ACCESS_KEY}"
             bucket_lookup_type: path
@@ -83,9 +98,9 @@ mimir-distributed:
         cpu: 1
         memory: 4Gi
     persistentVolume:
-        enabled: true
-        size: 50Gi
-        storageClassName: longhorn
+      enabled: true
+      size: 50Gi
+      storageClassName: longhorn
 
   querier:
     replicas: 2
