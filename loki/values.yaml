@@ -104,7 +104,9 @@ loki:
       limits:
         cpu: 200m
         memory: 1Gi
-
+    persistence:
+      size: 50Gi
+      storageClass: longhorn
   backend:
     replicas: 3
     resources:
