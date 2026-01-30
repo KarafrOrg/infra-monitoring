@@ -8,6 +8,7 @@ object-buckets:
         app: loki
       pushSecret:
         enabled: true
+        secretStoreName: gcp-sm-cluster-secret-store
 
 global:
   extraEnvFrom:
