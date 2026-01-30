@@ -1,3 +1,14 @@
+storageBuckets:
+  - name: prometheus-metrics-bucket
+    storageClassName: rook-ceph-bucket
+    externalKeyPrefix: prometheus-metrics-
+  - name: prometheus-metrics-ruler
+    storageClassName: rook-ceph-bucket
+    externalKeyPrefix: prometheus-metrics-ruler-
+  - name: prometheus-alertmanager
+    storageClassName: rook-ceph-bucket
+    externalKeyPrefix: prometheus-alertmanager-
+
 mimir-distributed:
   fullnameOverride: mimir
   global:

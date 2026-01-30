@@ -1,25 +1,10 @@
+{{- range $bucket := .Values.storageBuckets }}
 ---
 apiVersion: objectbucket.io/v1alpha1
 kind: ObjectBucketClaim
 metadata:
-  name: {{ index .Values "mimir-distributed" "mimir" "structuredConfig" "common" "storage" "s3" "bucket_name" }}-bucket-claim
+  name: {{ $bucket.name }}-bucket-claim
 spec:
-  generateBucketName: {{ index .Values "mimir-distributed" "mimir" "structuredConfig" "common" "storage" "s3" "bucket_name" }}
-  storageClassName: rook-ceph-bucket
----
-apiVersion: objectbucket.io/v1alpha1
-kind: ObjectBucketClaim
-metadata:
-  name: {{ index .Values "mimir-distributed" "mimir" "structuredConfig" "ruler_storage" "s3" "bucket_name" }}-bucket-claim
-spec:
-  generateBucketName: {{ index .Values "mimir-distributed" "mimir" "structuredConfig" "ruler_storage" "s3" "bucket_name" }}
-  storageClassName: rook-ceph-bucket
----
-apiVersion: objectbucket.io/v1alpha1
-kind: ObjectBucketClaim
-metadata:
-  name: {{ index .Values "mimir-distributed" "mimir" "structuredConfig" "alertmanager_storage" "s3" "bucket_name" }}-bucket-claim
-spec:
-  generateBucketName: {{ index .Values "mimir-distributed" "mimir" "structuredConfig" "alertmanager_storage" "s3" "bucket_name" }}
-  storageClassName: rook-ceph-bucket
-
+  generateBucketName: {{ $bucket.name }}
+  storageClassName: {{ $bucket.storageClassName }}
+{{- end }}
