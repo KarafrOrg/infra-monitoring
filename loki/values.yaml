@@ -7,7 +7,7 @@ object-buckets:
       labels:
         app: loki
       pushSecret:
-        enabled: false
+        enabled: true
 
 global:
   extraEnvFrom:
