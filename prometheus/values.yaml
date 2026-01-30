@@ -14,17 +14,17 @@ mimir-distributed:
             key: AWS_SECRET_ACCESS_KEY
       - name: PROMETHEUS_METRICS_BUCKET_HOST
         valueFrom:
-          secretKeyRef:
+          configMapKeyRef:
             name: prometheus-metrics-bucket-claim
             key: BUCKET_HOST
       - name: PROMETHEUS_METRICS_BUCKET_PORT
         valueFrom:
-          secretKeyRef:
+          configMapKeyRef:
             name: prometheus-metrics-bucket-claim
             key: BUCKET_PORT
       - name: PROMETHEUS_METRICS_BUCKET_NAME
         valueFrom:
-          secretKeyRef:
+          configMapKeyRef:
             name: prometheus-metrics-bucket-claim
             key: BUCKET_NAME
     extraEnvFrom:
