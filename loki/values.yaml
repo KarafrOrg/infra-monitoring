@@ -9,6 +9,13 @@ object-buckets:
       pushSecret:
         enabled: true
         secretStoreName: gcp-sm-cluster-secret-store
+        secretMappings:
+          - secretKey: AWS_ACCESS_KEY_ID
+            remoteRef:
+              remoteKey: loki-logs-s3-access-key
+          - secretKey: AWS_SECRET_ACCESS_KEY
+            remoteRef:
+              remoteKey: loki-logs-s3-secret-key
 
 global:
   extraEnvFrom:
