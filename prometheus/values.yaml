@@ -67,6 +67,33 @@ mimir-distributed:
             name: prometheus-metrics-ruler-bucket-claim
             key: BUCKET_NAME
       # endregion
+      # region Alertmanager
+      - name: PROMETHEUS_ALERTMANAGER_AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-alertmanager-bucket-claim
+            key: AWS_ACCESS_KEY_ID
+      - name: PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-alertmanager-bucket-claim
+            key: AWS_SECRET_ACCESS_KEY
+      - name: PROMETHEUS_ALERTMANAGER_BUCKET_HOST
+        valueFrom:
+          configMapKeyRef:
+            name: prometheus-alertmanager-bucket-claim
+            key: BUCKET_HOST
+      - name: PROMETHEUS_ALERTMANAGER_BUCKET_PORT
+        valueFrom:
+          configMapKeyRef:
+            name: prometheus-alertmanager-bucket-claim
+            key: BUCKET_PORT
+      - name: PROMETHEUS_ALERTMANAGER_BUCKET_NAME
+        valueFrom:
+          configMapKeyRef:
+            name: prometheus-alertmanager-bucket-claim
+            key: BUCKET_NAME
+      # endregion
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-creds-external-secret
@@ -103,10 +130,10 @@ mimir-distributed:
       alertmanager_storage:
         backend: s3
         s3:
-          bucket_name: prometheus-alertmanager
-          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
-          access_key_id: "${AWS_ACCESS_KEY_ID}"
-          secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
+          bucket_name: "${PROMETHEUS_ALERTMANAGER_BUCKET_NAME}"
+          endpoint: "${PROMETHEUS_ALERTMANAGER_BUCKET_HOST}.cluster.local:${PROMETHEUS_ALERTMANAGER_BUCKET_PORT}"
+          access_key_id: "${PROMETHEUS_ALERTMANAGER_AWS_ACCESS_KEY_ID}"
+          secret_access_key: "${PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY}"
           bucket_lookup_type: path
           insecure: true
   runtimeConfig:
