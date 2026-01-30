@@ -45,6 +45,8 @@ loki:
           configMapKeyRef:
             name: loki-logs-bucket
             key: BUCKET_NAME
+    extraArgs:
+      - -config.expand-env=true
   loki:
     schemaConfig:
       configs:
