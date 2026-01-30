@@ -112,28 +112,28 @@ mimir-distributed:
         storage:
           backend: s3
           s3:
-            bucket_name: "${PROMETHEUS_METRICS_BUCKET_NAME}"
-            endpoint: "${PROMETHEUS_METRICS_BUCKET_HOST}.cluster.local:${PROMETHEUS_METRICS_BUCKET_PORT}"
-            access_key_id: "${PROMETHEUS_METRICS_AWS_ACCESS_KEY_ID}"
-            secret_access_key: "${PROMETHEUS_METRICS_AWS_SECRET_ACCESS_KEY}"
+            bucket_name: ${PROMETHEUS_METRICS_BUCKET_NAME}
+            endpoint: ${PROMETHEUS_METRICS_BUCKET_HOST}.cluster.local:${PROMETHEUS_METRICS_BUCKET_PORT}
+            access_key_id: ${PROMETHEUS_METRICS_AWS_ACCESS_KEY_ID}
+            secret_access_key: ${PROMETHEUS_METRICS_AWS_SECRET_ACCESS_KEY}
             bucket_lookup_type: path
             insecure: true
       ruler_storage:
         backend: s3
         s3:
-          bucket_name: "${PROMETHEUS_METRICS_RULER_BUCKET_NAME}"
-          endpoint: "${PROMETHEUS_METRICS_RULER_BUCKET_HOST}.cluster.local:${PROMETHEUS_METRICS_RULER_BUCKET_PORT}"
-          access_key_id: "${PROMETHEUS_METRICS_RULER_AWS_ACCESS_KEY_ID}"
-          secret_access_key: "${PROMETHEUS_METRICS_RULER_AWS_SECRET_ACCESS_KEY}"
+          bucket_name: ${PROMETHEUS_METRICS_RULER_BUCKET_NAME}
+          endpoint: ${PROMETHEUS_METRICS_RULER_BUCKET_HOST}.cluster.local:${PROMETHEUS_METRICS_RULER_BUCKET_PORT}
+          access_key_id: ${PROMETHEUS_METRICS_RULER_AWS_ACCESS_KEY_ID}
+          secret_access_key: ${PROMETHEUS_METRICS_RULER_AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
           insecure: true
       alertmanager_storage:
         backend: s3
         s3:
-          bucket_name: "${PROMETHEUS_ALERTMANAGER_BUCKET_NAME}"
-          endpoint: "${PROMETHEUS_ALERTMANAGER_BUCKET_HOST}.cluster.local:${PROMETHEUS_ALERTMANAGER_BUCKET_PORT}"
-          access_key_id: "${PROMETHEUS_ALERTMANAGER_AWS_ACCESS_KEY_ID}"
-          secret_access_key: "${PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY}"
+          bucket_name: ${PROMETHEUS_ALERTMANAGER_BUCKET_NAME}
+          endpoint: ${PROMETHEUS_ALERTMANAGER_BUCKET_HOST}.cluster.local:${PROMETHEUS_ALERTMANAGER_BUCKET_PORT}
+          access_key_id: ${PROMETHEUS_ALERTMANAGER_AWS_ACCESS_KEY_ID}
+          secret_access_key: ${PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
           insecure: true
   runtimeConfig:
