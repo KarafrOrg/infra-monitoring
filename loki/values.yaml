@@ -13,40 +13,38 @@ object-buckets:
           - secretKey: AWS_SECRET_ACCESS_KEY
             remoteKey: loki-logs-s3-secret-key=
 
-global:
-  extraEnvFrom:
-    - secretRef:
-        name: loki-s3-creds
-  extraEnv:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: loki-logs-bucket
-          key: AWS_ACCESS_KEY_ID
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: loki-logs-bucket
-          key: AWS_SECRET_ACCESS_KEY
-    - name: LOKI_BUCKET_HOST
-      valueFrom:
-        configMapKeyRef:
-          name: loki-logs-bucket
-          key: BUCKET_HOST
-    - name: LOKI_BUCKET_PORT
-      valueFrom:
-        configMapKeyRef:
-          name: loki-logs-bucket
-          key: BUCKET_PORT
-    - name: LOKI_BUCKET_NAME
-      valueFrom:
-        configMapKeyRef:
-          name: loki-logs-bucket
-          key: BUCKET_NAME
-
 loki:
   deploymentMode: SimpleScalable
-
+  global:
+    extraEnvFrom:
+      - secretRef:
+          name: loki-s3-creds
+    extraEnv:
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: loki-logs-bucket
+            key: AWS_ACCESS_KEY_ID
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: loki-logs-bucket
+            key: AWS_SECRET_ACCESS_KEY
+      - name: LOKI_BUCKET_HOST
+        valueFrom:
+          configMapKeyRef:
+            name: loki-logs-bucket
+            key: BUCKET_HOST
+      - name: LOKI_BUCKET_PORT
+        valueFrom:
+          configMapKeyRef:
+            name: loki-logs-bucket
+            key: BUCKET_PORT
+      - name: LOKI_BUCKET_NAME
+        valueFrom:
+          configMapKeyRef:
+            name: loki-logs-bucket
+            key: BUCKET_NAME
   loki:
     schemaConfig:
       configs:
