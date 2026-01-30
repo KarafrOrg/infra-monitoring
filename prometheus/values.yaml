@@ -13,6 +13,7 @@ mimir-distributed:
   fullnameOverride: mimir
   global:
     extraEnv:
+      # region Prometheus
       - name: PROMETHEUS_METRICS_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
@@ -38,6 +39,34 @@ mimir-distributed:
           configMapKeyRef:
             name: prometheus-metrics-bucket-claim
             key: BUCKET_NAME
+      # endregion
+      # region Ruler
+      - name: PROMETHEUS_METRICS_RULER_AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-metrics-ruler-bucket-claim
+            key: AWS_ACCESS_KEY_ID
+      - name: PROMETHEUS_METRICS_RULER_AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: prometheus-metrics-ruler-bucket-claim
+            key: AWS_SECRET_ACCESS_KEY
+      - name: PROMETHEUS_METRICS_RULER_BUCKET_HOST
+        valueFrom:
+          configMapKeyRef:
+            name: prometheus-metrics-ruler-bucket-claim
+            key: BUCKET_HOST
+      - name: PROMETHEUS_METRICS_RULER_BUCKET_PORT
+        valueFrom:
+          configMapKeyRef:
+            name: prometheus-metrics-ruler-bucket-claim
+            key: BUCKET_PORT
+      - name: PROMETHEUS_METRICS_RULER_BUCKET_NAME
+        valueFrom:
+          configMapKeyRef:
+            name: prometheus-metrics-ruler-bucket-claim
+            key: BUCKET_NAME
+      # endregion
     extraEnvFrom:
       - secretRef:
           name: mimir-s3-creds-external-secret
@@ -65,10 +94,10 @@ mimir-distributed:
       ruler_storage:
         backend: s3
         s3:
-          bucket_name: prometheus-metrics-ruler
-          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
-          access_key_id: "${AWS_ACCESS_KEY_ID}"
-          secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
+          bucket_name: "${PROMETHEUS_METRICS_RULER_BUCKET_NAME}"
+          endpoint: "${PROMETHEUS_METRICS_RULER_BUCKET_HOST}.cluster.local:${PROMETHEUS_METRICS_RULER_BUCKET_PORT}"
+          access_key_id: "${PROMETHEUS_METRICS_RULER_AWS_ACCESS_KEY_ID}"
+          secret_access_key: "${PROMETHEUS_METRICS_RULER_AWS_SECRET_ACCESS_KEY}"
           bucket_lookup_type: path
           insecure: true
       alertmanager_storage:
