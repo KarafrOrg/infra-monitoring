@@ -10,7 +10,7 @@ object-buckets:
         component: prometheus
       pushSecret:
         enabled: true
-        secretStoreName: *secretStoreName gcp-sm-cluster-secret-store
+        secretStoreName: *secretStoreName
         secretMappings:
           - secretKey: AWS_ACCESS_KEY_ID
             remoteKey: prometheus-metrics-s3-access-key
