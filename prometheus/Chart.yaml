@@ -17,3 +17,6 @@ dependencies:
   - name: mimir-distributed
     version: 6.1.0-weekly.376
     repository: https://grafana.github.io/helm-charts
+  - name: object-buckets
+    version: 0.1.0
+    repository: https://karafrorg.github.io/object-buckets

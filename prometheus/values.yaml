@@ -1,13 +1,49 @@
-storageBuckets:
-  - name: prometheus-metrics
-    storageClassName: rook-ceph-bucket
-    externalKeyPrefix: prometheus-metrics-
-  - name: prometheus-metrics-ruler
-    storageClassName: rook-ceph-bucket
-    externalKeyPrefix: prometheus-metrics-ruler-
-  - name: prometheus-alertmanager
-    storageClassName: rook-ceph-bucket
-    externalKeyPrefix: prometheus-alertmanager-
+global:
+  secretStoreName: &secretStoreName gcp-sm-cluster-secret-store
+
+object-buckets:
+  buckets:
+    - name: &prometheusMetricsBucketName prometheus-metrics-bucket
+      storageClassName: rook-ceph-bucket
+      labels:
+        app: mimir
+        component: prometheus
+      pushSecret:
+        enabled: true
+        secretStoreName: *secretStoreName gcp-sm-cluster-secret-store
+        secretMappings:
+          - secretKey: AWS_ACCESS_KEY_ID
+            remoteKey: prometheus-metrics-s3-access-key
+          - secretKey: AWS_SECRET_ACCESS_KEY
+            remoteKey: prometheus-metrics-s3-secret-key
+
+    - name: &prometheusRulerBucketName prometheus-metrics-ruler-bucket
+      storageClassName: rook-ceph-bucket
+      labels:
+        app: mimir
+        component: prometheus-ruler
+      pushSecret:
+        enabled: true
+        secretStoreName: *secretStoreName
+        secretMappings:
+          - secretKey: AWS_ACCESS_KEY_ID
+            remoteKey: prometheus-metrics-ruler-s3-access-key
+          - secretKey: AWS_SECRET_ACCESS_KEY
+            remoteKey: prometheus-metrics-ruler-s3-secret-key
+
+    - name: &prometheusAlertmanagerBucketName prometheus-alertmanager-bucket
+      storageClassName: rook-ceph-bucket
+      labels:
+        app: mimir
+        component: alertmanager
+      pushSecret:
+        enabled: true
+        secretStoreName: *secretStoreName
+        secretMappings:
+          - secretKey: AWS_ACCESS_KEY_ID
+            remoteKey: prometheus-alertmanager-s3-access-key
+          - secretKey: AWS_SECRET_ACCESS_KEY
+            remoteKey: prometheus-alertmanager-s3-secret-key
 
 mimir-distributed:
   fullnameOverride: mimir
@@ -17,86 +53,83 @@ mimir-distributed:
       - name: PROMETHEUS_METRICS_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
-            name: prometheus-metrics-bucket-claim
+            name: *prometheusMetricsBucketName
             key: AWS_ACCESS_KEY_ID
       - name: PROMETHEUS_METRICS_AWS_SECRET_ACCESS_KEY
         valueFrom:
           secretKeyRef:
-            name: prometheus-metrics-bucket-claim
+            name: *prometheusMetricsBucketName
             key: AWS_SECRET_ACCESS_KEY
       - name: PROMETHEUS_METRICS_BUCKET_HOST
         valueFrom:
           configMapKeyRef:
-            name: prometheus-metrics-bucket-claim
+            name: *prometheusMetricsBucketName
             key: BUCKET_HOST
       - name: PROMETHEUS_METRICS_BUCKET_PORT
         valueFrom:
           configMapKeyRef:
-            name: prometheus-metrics-bucket-claim
+            name: *prometheusMetricsBucketName
             key: BUCKET_PORT
       - name: PROMETHEUS_METRICS_BUCKET_NAME
         valueFrom:
           configMapKeyRef:
-            name: prometheus-metrics-bucket-claim
+            name: *prometheusMetricsBucketName
             key: BUCKET_NAME
       # endregion
       # region Ruler
       - name: PROMETHEUS_METRICS_RULER_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
-            name: prometheus-metrics-ruler-bucket-claim
+            name: *prometheusRulerBucketName
             key: AWS_ACCESS_KEY_ID
       - name: PROMETHEUS_METRICS_RULER_AWS_SECRET_ACCESS_KEY
         valueFrom:
           secretKeyRef:
-            name: prometheus-metrics-ruler-bucket-claim
+            name: *prometheusRulerBucketName
             key: AWS_SECRET_ACCESS_KEY
       - name: PROMETHEUS_METRICS_RULER_BUCKET_HOST
         valueFrom:
           configMapKeyRef:
-            name: prometheus-metrics-ruler-bucket-claim
+            name: *prometheusRulerBucketName
             key: BUCKET_HOST
       - name: PROMETHEUS_METRICS_RULER_BUCKET_PORT
         valueFrom:
           configMapKeyRef:
-            name: prometheus-metrics-ruler-bucket-claim
+            name: *prometheusRulerBucketName
             key: BUCKET_PORT
       - name: PROMETHEUS_METRICS_RULER_BUCKET_NAME
         valueFrom:
           configMapKeyRef:
-            name: prometheus-metrics-ruler-bucket-claim
+            name: *prometheusRulerBucketName
             key: BUCKET_NAME
       # endregion
       # region Alertmanager
       - name: PROMETHEUS_ALERTMANAGER_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
-            name: prometheus-alertmanager-bucket-claim
+            name: *prometheusAlertmanagerBucketName
             key: AWS_ACCESS_KEY_ID
       - name: PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY
         valueFrom:
           secretKeyRef:
-            name: prometheus-alertmanager-bucket-claim
+            name: *prometheusAlertmanagerBucketName
             key: AWS_SECRET_ACCESS_KEY
       - name: PROMETHEUS_ALERTMANAGER_BUCKET_HOST
         valueFrom:
           configMapKeyRef:
-            name: prometheus-alertmanager-bucket-claim
+            name: *prometheusAlertmanagerBucketName
             key: BUCKET_HOST
       - name: PROMETHEUS_ALERTMANAGER_BUCKET_PORT
         valueFrom:
           configMapKeyRef:
-            name: prometheus-alertmanager-bucket-claim
+            name: *prometheusAlertmanagerBucketName
             key: BUCKET_PORT
       - name: PROMETHEUS_ALERTMANAGER_BUCKET_NAME
         valueFrom:
           configMapKeyRef:
-            name: prometheus-alertmanager-bucket-claim
+            name: *prometheusAlertmanagerBucketName
             key: BUCKET_NAME
       # endregion
-    extraEnvFrom:
-      - secretRef:
-          name: mimir-s3-creds-external-secret
   kafka:
     persistence:
       size: 50Gi
