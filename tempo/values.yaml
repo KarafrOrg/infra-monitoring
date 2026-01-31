@@ -1,3 +1,18 @@
+object-buckets:
+  buckets:
+    - name: &tempoTraceBucketName tempo-traces-bucket
+      storageClassName: rook-ceph-bucket
+      labels:
+        app: loki
+      pushSecret:
+        enabled: true
+        secretStoreName: gcp-sm-cluster-secret-store
+        secretMappings:
+          - secretKey: AWS_ACCESS_KEY_ID
+            remoteKey: tempo-traces-bucket-s3-access-key
+          - secretKey: AWS_SECRET_ACCESS_KEY
+            remoteKey: tempo-traces-bucket-s3-secret-key
+
 tempo:
   replicas: 1
 
@@ -16,19 +31,36 @@ tempo:
       - name: AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
-            name: tempo-s3-creds
+            name: *tempoTraceBucketName
             key: AWS_ACCESS_KEY_ID
       - name: AWS_SECRET_ACCESS_KEY
         valueFrom:
           secretKeyRef:
-            name: tempo-s3-creds
+            name: *tempoTraceBucketName
             key: AWS_SECRET_ACCESS_KEY
+      - name: TEMPO_S3_BUCKET_NAME
+        valueFrom:
+          configMapKeyRef:
+            name: *tempoTraceBucketName
+            key: BUCKET_NAME
+      - name: TEMPO_S3_ENDPOINT
+        valueFrom:
+          configMapKeyRef:
+            name: *tempoTraceBucketName
+            key: BUCKET_HOST
+      - name: TEMPO_S3_PORT
+        valueFrom:
+          configMapKeyRef:
+            name: *tempoTraceBucketName
+            key: BUCKET_PORT
+    extraArgs:
+      config.expand-env: true
     storage:
       trace:
         backend: s3
         s3:
-          bucket: tempo-traces
-          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          bucket: ${TEMPO_S3_BUCKET_NAME}
+          endpoint: ${TEMPO_S3_ENDPOINT}.cluster.local:${TEMPO_S3_PORT}
           region: us-east-1
           insecure: true
     # Retention and compaction
