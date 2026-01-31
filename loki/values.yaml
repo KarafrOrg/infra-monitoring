@@ -11,7 +11,7 @@ object-buckets:
           - secretKey: AWS_ACCESS_KEY_ID
             remoteKey: loki-logs-s3-access-key
           - secretKey: AWS_SECRET_ACCESS_KEY
-            remoteKey: loki-logs-s3-secret-key=
+            remoteKey: loki-logs-s3-secret-key
 
 loki:
   deploymentMode: SimpleScalable

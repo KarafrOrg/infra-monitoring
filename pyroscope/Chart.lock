@@ -2,5 +2,8 @@ dependencies:
 - name: pyroscope
   repository: https://grafana.github.io/helm-charts
   version: 1.16.0
-digest: sha256:3d27c73bbe34dc3b18d91f032a4668a0a90d648e576114030d5910659e3e9f60
-generated: "2025-12-18T23:28:45.066238+01:00"
+- name: object-buckets
+  repository: https://karafrorg.github.io/object-buckets
+  version: 0.1.0
+digest: sha256:d355dbf9c6e4c66b162c8843e1dc109efca71b440fadfa43ed8d0f057402e093
+generated: "2026-01-31T08:21:04.281304+01:00"

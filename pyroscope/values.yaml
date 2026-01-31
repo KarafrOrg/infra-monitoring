@@ -1,3 +1,18 @@
+object-buckets:
+  buckets:
+    - name: &bucketName pyroscope-profiles
+      storageClassName: rook-ceph-bucket
+      labels:
+        app: pyroscope
+      pushSecret:
+        enabled: true
+        secretStoreName: gcp-sm-cluster-secret-store
+        secretMappings:
+          - secretKey: AWS_ACCESS_KEY_ID
+            remoteKey: pyroscope-profiles-s3-access-key
+          - secretKey: AWS_SECRET_ACCESS_KEY
+            remoteKey: pyroscope-profiles-s3-secret-key
+
 pyroscope:
   pyroscope:
     replicaCount: 3
@@ -12,10 +27,36 @@ pyroscope:
       storage:
         backend: s3
         s3:
-          bucket_name: pyroscope-profiles
-          endpoint: seaweedfs-s3.infra-storage.svc.cluster.local:8333
+          bucket_name: ${PYROSCOPE_STORAGE_S3_BUCKET_NAME}
+          endpoint: ${PYROSCOPE_STORAGE_S3_HOST}.cluster.local:${PYROSCOPE_STORAGE_S3_PORT}
           region: us-east-1
           insecure: true
+    extraCustomEnvVars:
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: *bucketName
+            key: AWS_ACCESS_KEY_ID
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: *bucketName
+            key: AWS_SECRET_ACCESS_KEY
+      - name: PYROSCOPE_STORAGE_S3_BUCKET_NAME
+        valueFrom:
+          configMapKeyRef:
+            name: *bucketName
+            key: BUCKET_NAME
+      - name: PYROSCOPE_STORAGE_S3_HOST
+        valueFrom:
+          configMapKeyRef:
+            name: *bucketName
+            key: BUCKET_HOST
+      - name: PYROSCOPE_STORAGE_S3_PORT
+        valueFrom:
+          configMapKeyRef:
+            name: *bucketName
+            key: BUCKET_PORT
     extraEnvFrom:
       - secretRef:
           name: pyroscope-s3-creds
