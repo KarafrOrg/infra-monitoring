@@ -16,9 +16,6 @@ object-buckets:
 loki:
   deploymentMode: SimpleScalable
   global:
-    extraEnvFrom:
-      - secretRef:
-          name: loki-s3-creds
     extraEnv:
       - name: AWS_ACCESS_KEY_ID
         valueFrom:

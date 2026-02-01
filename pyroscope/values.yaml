@@ -59,9 +59,6 @@ pyroscope:
           configMapKeyRef:
             name: *bucketName
             key: BUCKET_PORT
-    extraEnvFrom:
-      - secretRef:
-          name: pyroscope-s3-creds
   minio:
     enabled: false
   alloy:
