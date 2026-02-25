@@ -147,7 +147,6 @@ mimir-distributed:
         max_closing_blocks_concurrency: 2
         max_opening_blocks_concurrency: 4
         symbols_flushers_concurrency: 4
-        deletion_mode: filter-and-delete
       common:
         storage:
           backend: s3
