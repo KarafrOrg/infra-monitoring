@@ -141,6 +141,13 @@ mimir-distributed:
         ingestion_rate: 50000
         ingestion_burst_size: 1000000
         max_global_series_per_user: 3000000
+        compactor_blocks_retention_period: 7d  # 7 days retention
+      compactor:
+        deletion_delay: 2h
+        max_closing_blocks_concurrency: 2
+        max_opening_blocks_concurrency: 4
+        symbols_flushers_concurrency: 4
+        deletion_mode: filter-and-delete
       common:
         storage:
           backend: s3

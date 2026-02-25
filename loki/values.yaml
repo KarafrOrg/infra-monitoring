@@ -80,6 +80,11 @@ loki:
       creation_grace_period: 10m
       max_streams_per_user: 0  # No limit
       max_global_streams_per_user: 0  # No limit
+      retention_period: 168h  # 7 days
+    compactor:
+      retention_enabled: true
+      retention_delete_delay: 2h
+      retention_delete_worker_count: 150
 
   # SimpleScalable components
   read:
