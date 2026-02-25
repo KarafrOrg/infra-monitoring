@@ -151,8 +151,6 @@ mimir-distributed:
           max_ingestion_rate: 200000
           max_series: 3000000
           max_inflight_push_requests: 100000
-        wal:
-          enabled: false
       distributor:
         instance_limits:
           max_ingestion_rate: 200000
@@ -198,6 +196,8 @@ mimir-distributed:
 
   ingester:
     replicas: 3
+    extraArgs:
+      ingester.wal-enabled: "false"
     resources:
       requests:
         cpu: 500m
