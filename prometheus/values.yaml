@@ -205,7 +205,7 @@ mimir-distributed:
         memory: 4Gi
     persistentVolume:
       enabled: true
-      size: 50Gi
+      size: 100Gi
       storageClassName: longhorn
 
   querier:
