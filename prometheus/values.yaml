@@ -147,6 +147,15 @@ mimir-distributed:
         max_closing_blocks_concurrency: 2
         max_opening_blocks_concurrency: 4
         symbols_flushers_concurrency: 4
+      ingester:
+        instance_limits:
+          max_ingestion_rate: 200000  # Per-instance ingestion rate limit
+          max_series: 3000000
+          max_inflight_push_requests: 100000
+      distributor:
+        instance_limits:
+          max_ingestion_rate: 200000
+          max_inflight_push_requests: 100000
       common:
         storage:
           backend: s3
@@ -175,15 +184,6 @@ mimir-distributed:
           secret_access_key: ${PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
           insecure: true
-  runtimeConfig:
-    ingester_limits: # limits that each ingester replica enforces
-      max_ingestion_rate: 200000  # Increased from 50k to 200k samples/sec per ingester
-      max_series: 3000000
-      max_inflight_push_requests: 100000  # Increased from 50k to 100k
-    distributor_limits: # limits that each distributor replica enforces
-      max_ingestion_rate: 200000  # Increased from 50k to 200k samples/sec per distributor
-      max_inflight_push_requests: 100000  # Increased from 50k to 100k
-      max_inflight_push_requests_bytes: 100000000  # Increased from 50MB to 100MB
   distributor:
     replicas: 2
     resources:
