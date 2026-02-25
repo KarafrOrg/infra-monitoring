@@ -49,7 +49,7 @@ mimir-distributed:
   fullnameOverride: mimir
   global:
     extraEnv:
-      # region Prometheus
+      # Prometheus
       - name: PROMETHEUS_METRICS_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
@@ -75,8 +75,7 @@ mimir-distributed:
           configMapKeyRef:
             name: *prometheusMetricsBucketName
             key: BUCKET_NAME
-      # endregion
-      # region Ruler
+      # Prometheus Ruler
       - name: PROMETHEUS_METRICS_RULER_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
@@ -102,8 +101,7 @@ mimir-distributed:
           configMapKeyRef:
             name: *prometheusRulerBucketName
             key: BUCKET_NAME
-      # endregion
-      # region Alertmanager
+      # Alertmanager
       - name: PROMETHEUS_ALERTMANAGER_AWS_ACCESS_KEY_ID
         valueFrom:
           secretKeyRef:
@@ -129,19 +127,20 @@ mimir-distributed:
           configMapKeyRef:
             name: *prometheusAlertmanagerBucketName
             key: BUCKET_NAME
-      # endregion
+
   kafka:
     persistence:
       size: 50Gi
     logRetentionHours: 2
+
   mimir:
     structuredConfig:
       limits:
         out_of_order_time_window: 15m
-        ingestion_rate: 200000  # Increased from 50k to 200k samples/sec per user
-        ingestion_burst_size: 2000000  # Increased from 1M to 2M
+        ingestion_rate: 200000
+        ingestion_burst_size: 2000000
         max_global_series_per_user: 3000000
-        compactor_blocks_retention_period: 7d  # 7 days retention
+        compactor_blocks_retention_period: 7d
       compactor:
         deletion_delay: 2h
         max_closing_blocks_concurrency: 2
@@ -149,9 +148,11 @@ mimir-distributed:
         symbols_flushers_concurrency: 4
       ingester:
         instance_limits:
-          max_ingestion_rate: 200000  # Per-instance ingestion rate limit
+          max_ingestion_rate: 200000
           max_series: 3000000
           max_inflight_push_requests: 100000
+        wal:
+          enabled: false
       distributor:
         instance_limits:
           max_ingestion_rate: 200000
@@ -184,6 +185,7 @@ mimir-distributed:
           secret_access_key: ${PROMETHEUS_ALERTMANAGER_AWS_SECRET_ACCESS_KEY}
           bucket_lookup_type: path
           insecure: true
+
   distributor:
     replicas: 2
     resources:
@@ -198,12 +200,11 @@ mimir-distributed:
     replicas: 3
     resources:
       requests:
-        cpu: 200m
-        memory: 512Mi
+        cpu: 500m
+        memory: 2Gi
       limits:
-        cpu: 1
-        memory: 4Gi
-
+        cpu: 2
+        memory: 8Gi
     persistentVolume:
       enabled: true
       size: 100Gi
@@ -239,5 +240,6 @@ mimir-distributed:
       limits:
         cpu: 250m
         memory: 500Mi
+
   minio:
     enabled: false
