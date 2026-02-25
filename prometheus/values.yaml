@@ -138,8 +138,8 @@ mimir-distributed:
     structuredConfig:
       limits:
         out_of_order_time_window: 15m
-        ingestion_rate: 50000
-        ingestion_burst_size: 1000000
+        ingestion_rate: 200000  # Increased from 50k to 200k samples/sec per user
+        ingestion_burst_size: 2000000  # Increased from 1M to 2M
         max_global_series_per_user: 3000000
         compactor_blocks_retention_period: 7d  # 7 days retention
       compactor:
