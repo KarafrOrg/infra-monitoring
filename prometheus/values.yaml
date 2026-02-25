@@ -196,8 +196,6 @@ mimir-distributed:
 
   ingester:
     replicas: 3
-    extraArgs:
-      ingester.wal-enabled: "false"
     resources:
       requests:
         cpu: 500m
@@ -205,10 +203,9 @@ mimir-distributed:
       limits:
         cpu: 2
         memory: 8Gi
+
     persistentVolume:
-      enabled: true
-      size: 100Gi
-      storageClassName: longhorn
+      enabled: false
 
   querier:
     replicas: 2
