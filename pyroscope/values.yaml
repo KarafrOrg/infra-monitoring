@@ -33,9 +33,7 @@ pyroscope:
           endpoint: ${PYROSCOPE_STORAGE_S3_HOST}.cluster.local:${PYROSCOPE_STORAGE_S3_PORT}
           region: us-east-1
           insecure: true
-        retention_policy:
-          max_block_duration: 24h
-          retention_duration: 168h  # 7 days
+      retention: 168h  # 7 days
       limits:
         max_query_lookback: 168h
     extraCustomEnvVars:
