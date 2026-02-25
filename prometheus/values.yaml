@@ -203,6 +203,7 @@ mimir-distributed:
       limits:
         cpu: 1
         memory: 4Gi
+
     persistentVolume:
       enabled: true
       size: 100Gi

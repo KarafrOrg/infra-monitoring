@@ -14,7 +14,7 @@ object-buckets:
             remoteKey: tempo-traces-bucket-s3-secret-key
 
 tempo:
-  replicas: 1
+  replicas: 2
 
   tempo:
     metricsGenerator:
