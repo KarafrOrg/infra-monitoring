@@ -137,7 +137,7 @@ mimir-distributed:
     structuredConfig:
       limits:
         out_of_order_time_window: 15m
-        ingestion_rate: 200000
+        ingestion_rate: 400000
         ingestion_burst_size: 2000000
         max_global_series_per_user: 3000000
         compactor_blocks_retention_period: 7d
@@ -148,9 +148,9 @@ mimir-distributed:
         symbols_flushers_concurrency: 4
       ingester:
         instance_limits:
-          max_ingestion_rate: 200000
+          max_ingestion_rate: 400000
           max_series: 3000000
-          max_inflight_push_requests: 100000
+          max_inflight_push_requests: 200000
       distributor:
         instance_limits:
           max_ingestion_rate: 200000
