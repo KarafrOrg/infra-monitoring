@@ -111,7 +111,7 @@ tempo:
         frontend_address: localhost:9095
         parallelism: 2
 
-    queryFrontend:
+    query_frontend:
       search:
         max_duration: 0  # unlimited search duration
         max_result_limit: 1000
