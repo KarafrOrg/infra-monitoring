@@ -17,7 +17,8 @@ grafana:
     enabled: true
     storageClassName: longhorn
     size: 10Gi
-
+  plugins:
+    - yesoreyeram-infinity-datasource
   datasources:
     datasources.yaml:
       apiVersion: 1
