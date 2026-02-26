@@ -55,6 +55,15 @@ tempo:
             key: BUCKET_PORT
     extraArgs:
       config.expand-env: true
+
+    # Server configuration for query frontend
+    server:
+      http_listen_port: 3100
+      grpc_listen_port: 9095
+
+    # Enable multitenancy (false for single tenant, consistent queries)
+    multitenancy_enabled: false
+
     storage:
       trace:
         backend: s3
@@ -96,17 +105,24 @@ tempo:
       zipkin:
         endpoint: 0.0.0.0:9411
 
-    # Query configuration - removed frontend_worker for monolithic mode
     querier:
       max_concurrent_queries: 20
+      frontend_worker:
+        frontend_address: localhost:9095
+        parallelism: 2
 
-    # Override configuration
+    queryFrontend:
+      search:
+        max_duration: 0  # unlimited search duration
+        max_result_limit: 1000
+      trace_by_id:
+        query_shards: 2
+
     overrides:
       defaults:
         metrics_generator:
           processors: [ service-graphs, span-metrics, local-blocks ]
 
-  # Resource configuration for homelab
   resources:
     requests:
       cpu: 100m
