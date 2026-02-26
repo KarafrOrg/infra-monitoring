@@ -56,14 +56,6 @@ tempo:
     extraArgs:
       config.expand-env: true
 
-    # Server configuration for query frontend
-    server:
-      http_listen_port: 3100
-      grpc_listen_port: 9095
-
-    # Enable multitenancy (false for single tenant, consistent queries)
-    multitenancy_enabled: false
-
     storage:
       trace:
         backend: s3
@@ -107,14 +99,10 @@ tempo:
 
     querier:
       max_concurrent_queries: 20
-      frontend_worker:
-        frontend_address: localhost:9095
-        parallelism: 2
 
     query_frontend:
       search:
-        max_duration: 0  # unlimited search duration
-        max_result_limit: 1000
+        max_duration: 0
       trace_by_id:
         query_shards: 2
 
