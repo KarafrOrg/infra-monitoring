@@ -29,7 +29,7 @@ otelcol.exporter.prometheus "beyla" {
 
 otelcol.exporter.otlp "tempo" {
   client {
-    endpoint = "http://infra-monitoring-tempo.infra-monitoring.svc.cluster.local:4317"
+    endpoint = "http://tempo-distributed-gateway.infra-monitoring.svc.cluster.local:4317"
     tls {
       insecure = true
     }
