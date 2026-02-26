@@ -206,15 +206,7 @@ tempo-distributed:
         processors: [service-graphs, span-metrics, local-blocks]
 
   memcached:
-    enabled: true
-    replicas: 1
-    resources:
-      requests:
-        cpu: 50m
-        memory: 128Mi
-      limits:
-        cpu: 100m
-        memory: 256Mi
+    enabled: false
 
   cache:
     caches:
