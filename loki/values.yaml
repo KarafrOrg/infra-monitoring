@@ -90,7 +90,7 @@ loki:
         memory: 256Mi
       limits:
         cpu: 200m
-        memory: 512Mi
+        memory: 2Gi
 
   write:
     replicas: 3
