@@ -19,6 +19,7 @@ grafana:
     size: 10Gi
   plugins:
     - yesoreyeram-infinity-datasource
+    - grafana-polystat-panel
   datasources:
     datasources.yaml:
       apiVersion: 1
