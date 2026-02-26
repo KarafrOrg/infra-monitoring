@@ -44,8 +44,6 @@ tempo-distributed:
           configMapKeyRef:
             name: *tempoTraceBucketName
             key: BUCKET_PORT
-    extraArgs:
-      - -config.expand-env=true
 
   # Storage configuration
   storage:
@@ -65,11 +63,10 @@ tempo-distributed:
         prefetch_trace_count: 1000
       blocklist_poll: 5m
 
-  # Ingester configuration
   ingester:
     replicas: 3
     persistence:
-      enabled: false  # Using object storage
+      enabled: false
     config:
       replication_factor: 3
       trace_idle_period: 10s
@@ -84,8 +81,9 @@ tempo-distributed:
       limits:
         cpu: 1000m
         memory: 2Gi
+    extraArgs:
+      - -config.expand-env=true
 
-  # Distributor configuration
   distributor:
     replicas: 2
     resources:
@@ -95,8 +93,9 @@ tempo-distributed:
       limits:
         cpu: 500m
         memory: 1Gi
+    extraArgs:
+      - -config.expand-env=true
 
-  # Compactor configuration with retention
   compactor:
     replicas: 1
     config:
@@ -115,8 +114,9 @@ tempo-distributed:
       limits:
         cpu: 500m
         memory: 1Gi
+    extraArgs:
+      - -config.expand-env=true
 
-  # Querier configuration with query workers enabled
   querier:
     replicas: 2
     config:
@@ -131,8 +131,9 @@ tempo-distributed:
       limits:
         cpu: 500m
         memory: 1Gi
+    extraArgs:
+      - -config.expand-env=true
 
-  # Query Frontend configuration
   queryFrontend:
     replicas: 2
     config:
@@ -156,6 +157,8 @@ tempo-distributed:
       limits:
         cpu: 500m
         memory: 1Gi
+    extraArgs:
+      - -config.expand-env=true
 
   metricsGenerator:
     enabled: true
@@ -199,6 +202,8 @@ tempo-distributed:
       limits:
         cpu: 200m
         memory: 256Mi
+    extraArgs:
+      - -config.expand-env=true
 
   overrides:
     defaults:
@@ -206,7 +211,15 @@ tempo-distributed:
         processors: [service-graphs, span-metrics, local-blocks]
 
   memcached:
-    enabled: false
+    enabled: true
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
 
   cache:
     caches:
