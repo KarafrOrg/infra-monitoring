@@ -13,165 +13,6 @@ object-buckets:
           - secretKey: AWS_SECRET_ACCESS_KEY
             remoteKey: tempo-traces-bucket-s3-secret-key
 
-tempo:
-  enabled: false  # Using tempo-distributed instead
-  replicas: 3
-
-  tempo:
-    metricsGenerator:
-      enabled: true
-      remoteWriteUrl: "http://mimir-gateway.infra-monitoring.svc.cluster.local:80/api/v1/push"
-      processor:
-        service_graphs:
-          dimensions: [ ]
-        span_metrics:
-          dimensions: [ ]
-        local_blocks:
-          filter_server_spans: false
-    extraEnv:
-      - name: AWS_ACCESS_KEY_ID
-        valueFrom:
-          secretKeyRef:
-            name: *tempoTraceBucketName
-            key: AWS_ACCESS_KEY_ID
-      - name: AWS_SECRET_ACCESS_KEY
-        valueFrom:
-          secretKeyRef:
-            name: *tempoTraceBucketName
-            key: AWS_SECRET_ACCESS_KEY
-      - name: TEMPO_S3_BUCKET_NAME
-        valueFrom:
-          configMapKeyRef:
-            name: *tempoTraceBucketName
-            key: BUCKET_NAME
-      - name: TEMPO_S3_ENDPOINT
-        valueFrom:
-          configMapKeyRef:
-            name: *tempoTraceBucketName
-            key: BUCKET_HOST
-      - name: TEMPO_S3_PORT
-        valueFrom:
-          configMapKeyRef:
-            name: *tempoTraceBucketName
-            key: BUCKET_PORT
-    extraArgs:
-      config.expand-env: true
-
-    storage:
-      trace:
-        backend: s3
-        s3:
-          bucket: ${TEMPO_S3_BUCKET_NAME}
-          endpoint: ${TEMPO_S3_ENDPOINT}.cluster.local:${TEMPO_S3_PORT}
-          region: us-east-1
-          insecure: true
-    # Retention and compaction
-    compactor:
-      compaction:
-        block_retention: 168h  # 7 days
-
-    # Ingester configuration
-    ingester:
-      max_block_duration: 10m
-      complete_block_timeout: 15m
-      flush_check_period: 5s
-      trace_idle_period: 10s
-
-    # Receivers configuration
-    receivers:
-      otlp:
-        protocols:
-          http:
-            endpoint: 0.0.0.0:4318
-          grpc:
-            endpoint: 0.0.0.0:4317
-      jaeger:
-        protocols:
-          grpc:
-            endpoint: 0.0.0.0:14250
-          thrift_http:
-            endpoint: 0.0.0.0:14268
-          thrift_compact:
-            endpoint: 0.0.0.0:6831
-          thrift_binary:
-            endpoint: 0.0.0.0:6832
-      zipkin:
-        endpoint: 0.0.0.0:9411
-
-    querier:
-      max_concurrent_queries: 20
-
-    query_frontend:
-      search:
-        max_duration: 0
-      trace_by_id:
-        query_shards: 2
-
-    overrides:
-      defaults:
-        metrics_generator:
-          processors: [ service-graphs, span-metrics, local-blocks ]
-
-  resources:
-    requests:
-      cpu: 100m
-      memory: 512Mi
-    limits:
-      cpu: 500m
-      memory: 2Gi
-
-  # Persistent storage for WAL
-  persistence:
-    enabled: true
-    size: 30Gi
-    storageClassName: longhorn
-
-  # Service configuration
-  service:
-    type: ClusterIP
-    port: 3100
-
-  # Enable OTLP receivers
-  traces:
-    otlp:
-      http:
-        enabled: true
-      grpc:
-        enabled: true
-    jaeger:
-      thriftHttp:
-        enabled: true
-      grpc:
-        enabled: true
-    zipkin:
-      enabled: true
-
-  # Service monitor for Prometheus
-  serviceMonitor:
-    enabled: true
-    interval: 30s
-
-  # Pod annotations
-  podAnnotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3100"
-
-  # Security context
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 10001
-    fsGroup: 10001
-
-  # Topology spread for high availability (even in single replica mode)
-  topologySpreadConstraints:
-    - maxSkew: 1
-      topologyKey: kubernetes.io/hostname
-      whenUnsatisfiable: ScheduleAnyway
-      labelSelector:
-        matchLabels:
-          app.kubernetes.io/name: tempo
-          app.kubernetes.io/instance: tempo
-
 tempo-distributed:
   enabled: true
   fullnameOverride: tempo-distributed
@@ -316,7 +157,6 @@ tempo-distributed:
         cpu: 500m
         memory: 1Gi
 
-  # Metrics Generator configuration
   metricsGenerator:
     enabled: true
     replicas: 2
@@ -349,7 +189,6 @@ tempo-distributed:
         cpu: 500m
         memory: 1Gi
 
-  # Gateway configuration
   gateway:
     enabled: true
     replicas: 2
@@ -361,13 +200,11 @@ tempo-distributed:
         cpu: 200m
         memory: 256Mi
 
-  # Overrides for all tenants
   overrides:
     defaults:
       metrics_generator:
         processors: [service-graphs, span-metrics, local-blocks]
 
-  # Memcached configuration
   memcached:
     enabled: true
     replicas: 1
@@ -379,7 +216,6 @@ tempo-distributed:
         cpu: 100m
         memory: 256Mi
 
-  # Cache configuration
   cache:
     caches:
       - memcached:
@@ -392,16 +228,13 @@ tempo-distributed:
           - bloom
           - frontend-search
 
-  # Disable minio
   minio:
     enabled: false
 
-  # Service monitors
   serviceMonitor:
     enabled: true
     interval: 30s
 
-  # Traces receivers via gateway
   traces:
     otlp:
       http:
@@ -415,4 +248,3 @@ tempo-distributed:
         enabled: true
     zipkin:
       enabled: true
-
