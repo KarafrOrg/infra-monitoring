@@ -95,15 +95,20 @@ spec:
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
               echo "Rendering jsonnet file: $SOURCE_FILE"
               echo "Installing jsonnet and dependencies..."
-              apk add --no-cache jsonnet git
+              apk add --no-cache jsonnet git go
+
+              echo "Installing jsonnet-bundler..."
+              go install -a github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
+              export PATH=$PATH:$(go env GOPATH)/bin
 
               echo "Installing grafonnet library..."
-              mkdir -p /tmp/jsonnet-libs
-              cd /tmp/jsonnet-libs
-              git clone --depth 1 https://github.com/grafana/grafonnet-lib.git
+              mkdir -p /tmp/jsonnet-work
+              cd /tmp/jsonnet-work
+              jb init
+              jb install github.com/grafana/grafonnet/gen/grafonnet-latest@main
 
               echo "Rendering dashboard with grafonnet..."
-              jsonnet -J /tmp/jsonnet-libs/grafonnet-lib "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
+              jsonnet -J /tmp/jsonnet-work/vendor "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
             else
               echo "Copying JSON file: $SOURCE_FILE"
               cp "/tmp/source-$SOURCE_FILE" "/tmp/$DASHBOARD_NAME.json"
