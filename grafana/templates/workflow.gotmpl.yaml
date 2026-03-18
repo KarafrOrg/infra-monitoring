@@ -128,19 +128,16 @@ spec:
             # Install dependencies
             apk add --no-cache jq
             
-            CURRENT_DASHBOARDS={{ `"{{inputs.parameters.dashboard-list}}"` }}
+            CURRENT_DASHBOARDS='{{ `{{inputs.parameters.dashboard-list}}` }}'
             
             echo "Current dashboards from source: $CURRENT_DASHBOARDS"
             
-            # Get all existing dashboard ConfigMaps (those with the grafana-dashboard label but NOT -source suffix)
+            # Get all existing dashboard ConfigMaps (those with the grafana-dashboard label)
             EXISTING_CMS=$(kubectl get configmaps -n {{ .Release.Namespace }} \
               -l {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" }} \
               -o jsonpath='{.items[*].metadata.name}')
             
             echo "Existing dashboard ConfigMaps: $EXISTING_CMS"
-            
-            # Convert current dashboards JSON array to space-separated list
-            CURRENT_LIST=$(echo "$CURRENT_DASHBOARDS" | jq -r '.[]' | tr '\n' ' ')
             
             echo "Checking for orphaned dashboards to delete..."
             
@@ -148,11 +145,15 @@ spec:
             for cm in $EXISTING_CMS; do
               # Skip if it ends with -source (those are source ConfigMaps)
               if echo "$cm" | grep -q -- '-source$'; then
+                echo "Skipping source ConfigMap: $cm"
                 continue
               fi
               
-              # Check if this dashboard still exists in current list
-              if echo "$CURRENT_LIST" | grep -q -w "$cm"; then
+              # Check if this dashboard still exists in current list using jq
+              # We need to check if the cm name is in the JSON array
+              FOUND=$(echo "$CURRENT_DASHBOARDS" | jq -r --arg name "$cm" 'any(.[]; . == $name)')
+              
+              if [ "$FOUND" = "true" ]; then
                 echo "Keeping: $cm (still exists in source)"
               else
                 echo "Deleting: $cm (no longer exists in source)"
