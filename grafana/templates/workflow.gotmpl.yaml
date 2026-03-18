@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   entrypoint: render-grafana-dashboards
-  serviceAccountName: {{ .Values.argo.serviceAccount }}
+  serviceAccountName: {{ .Values.argo.serviceAccount | default "grafana-renderer" }}
   ttlStrategy:
     secondsAfterCompletion: {{ .Values.argo.ttlSecondsAfterCompletion | default 600 }}
 
@@ -28,7 +28,7 @@ spec:
             ITEMS="$ITEMS\"$BASENAME\","
           done
           ITEMS="${ITEMS%,}]"
-          echo "$ITEMS"
+          echo "$ITEMS" > /tmp/argo-output.json
         volumeMounts:
           - name: dashboards
             mountPath: /dashboards
@@ -43,7 +43,7 @@ spec:
       steps:
         - - name: render-each-dashboard
             template: render-dashboard
-            withParam: "{{`{{steps.list-dashboards.outputs.parameters.dashboard-list}}`}}"
+            withParam: "{{steps.list-dashboards.outputs.parameters.dashboard-list}}"
 
     - name: render-dashboard
       inputs:
@@ -56,7 +56,7 @@ spec:
         args:
           - |
             set -e
-            DASHBOARD_FILE='{{`{{inputs.parameters.dashboard-file}}`}}'
+            DASHBOARD_FILE="{{inputs.parameters.dashboard-file}}"
             DASHBOARD_NAME=$(basename "$DASHBOARD_FILE" .jsonnet)
             echo "Processing dashboard: $DASHBOARD_FILE -> $DASHBOARD_NAME.json"
 
@@ -74,13 +74,7 @@ spec:
           - name: dashboards
             mountPath: /dashboards
             readOnly: true
-          - name: kubeconfig
-            mountPath: /root/.kube
-            readOnly: true
       volumes:
         - name: dashboards
           configMap:
             name: {{ .Values.grafana.dashboards.configMapName | default "grafana-dashboards" }}
-        - name: kubeconfig
-          configMap:
-            name: {{ .Values.argo.kubeconfigConfigMap | default "kubeconfig" }}
