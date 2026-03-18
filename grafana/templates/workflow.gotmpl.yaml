@@ -22,6 +22,13 @@ spec:
             apk add --no-cache jq
             ITEMS=$(kubectl get configmaps -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep -- '-source$' | sed 's/-source$//' | jq -R -s -c 'split("\n") | map(select(length > 0))')
             echo "$ITEMS" > /tmp/dashboard-list.json
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "10m"
+          limits:
+            memory: "10Mi"
+            cpu: "100m"
       outputs:
         parameters:
           - name: dashboard-list
@@ -113,6 +120,13 @@ spec:
             kubectl apply -f -
 
             echo "Successfully created configmap: $DASHBOARD_NAME"
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "10m"
+          limits:
+            memory: "10Mi"
+            cpu: "100m"
 
     - name: cleanup-dashboards
       inputs:
@@ -162,4 +176,10 @@ spec:
             done
             
             echo "Cleanup complete"
-
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "10m"
+          limits:
+            memory: "10Mi"
+            cpu: "100m"
