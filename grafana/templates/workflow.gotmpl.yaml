@@ -65,13 +65,25 @@ spec:
 
             echo "Source file: $SOURCE_FILE"
             kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath="{.data['$SOURCE_FILE']}" > "/tmp/source-$SOURCE_FILE"
+            
+            echo "=== Content of source file (first 20 lines) ==="
+            head -20 "/tmp/source-$SOURCE_FILE"
+            echo "=== End of source file preview ==="
+            echo "File size: $(wc -c < /tmp/source-$SOURCE_FILE) bytes"
 
             # Check if it's a jsonnet file
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
               echo "Rendering jsonnet file: $SOURCE_FILE"
-              echo "Installing jsonnet from Alpine repositories..."
-              apk add --no-cache jsonnet
-              jsonnet "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
+              echo "Installing jsonnet and dependencies from Alpine repositories..."
+              apk add --no-cache jsonnet git
+              
+              echo "Installing grafonnet library..."
+              mkdir -p /tmp/jsonnet-libs
+              cd /tmp/jsonnet-libs
+              git clone --depth 1 https://github.com/grafana/grafonnet-lib.git
+              
+              echo "Rendering dashboard with grafonnet..."
+              jsonnet -J /tmp/jsonnet-libs/grafonnet-lib "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
             else
               echo "Copying JSON file: $SOURCE_FILE"
               cp "/tmp/source-$SOURCE_FILE" "/tmp/$DASHBOARD_NAME.json"
