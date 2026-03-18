@@ -64,7 +64,21 @@ spec:
             SOURCE_FILE=$(echo "$SOURCE_FILES" | head -n 1)
             
             echo "Source file: $SOURCE_FILE"
-            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath="{.data['$SOURCE_FILE']}" > "/tmp/source-$SOURCE_FILE"
+            
+            # Debug: Show what's in the ConfigMap
+            echo "=== ConfigMap content ==="
+            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o yaml
+            
+            # Extract and decode the content properly
+            echo "=== Extracting content ==="
+            CONTENT=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o json | jq -r ".data[\"$SOURCE_FILE\"]")
+            
+            # Write content to file
+            printf "%s" "$CONTENT" > "/tmp/source-$SOURCE_FILE"
+            
+            echo "Extracted file size: $(wc -c < /tmp/source-$SOURCE_FILE) bytes"
+            echo "First 10 lines of extracted file:"
+            head -10 "/tmp/source-$SOURCE_FILE" || echo "(file is empty or error)"
 
             # Check if it's a jsonnet file
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
