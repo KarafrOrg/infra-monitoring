@@ -59,23 +59,12 @@ spec:
 
             echo "Processing dashboard: $DASHBOARD_NAME from ConfigMap: $SOURCE_CM"
 
-            # Debug: Show the entire ConfigMap
-            echo "=== Full ConfigMap content ==="
-            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o yaml
-            echo "=== End of ConfigMap ==="
-
             # Get the source file from the ConfigMap
             SOURCE_FILES=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath='{.data}' | jq -r 'keys[]')
             SOURCE_FILE=$(echo "$SOURCE_FILES" | head -n 1)
             
             echo "Source file: $SOURCE_FILE"
-            echo "All keys in ConfigMap: $SOURCE_FILES"
             kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath="{.data['$SOURCE_FILE']}" > "/tmp/source-$SOURCE_FILE"
-            
-            echo "=== Content of source file (first 20 lines) ==="
-            head -20 "/tmp/source-$SOURCE_FILE"
-            echo "=== End of source file preview ==="
-            echo "File size: $(wc -c < /tmp/source-$SOURCE_FILE) bytes"
 
             # Check if it's a jsonnet file
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
