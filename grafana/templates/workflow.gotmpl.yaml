@@ -50,6 +50,10 @@ spec:
             template: list-dashboards
         - - name: render-each-dashboard
             template: render-dashboard
+            arguments:
+              parameters:
+                - name: dashboard-file
+                  value: "{{`{{item}}`}}"
             withParam: "{{`{{steps.list-dashboards.outputs.parameters.dashboard-list}}`}}"
 
     - name: render-dashboard
