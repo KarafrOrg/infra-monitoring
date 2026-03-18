@@ -69,10 +69,9 @@ spec:
             # Check if it's a jsonnet file
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
               echo "Rendering jsonnet file: $SOURCE_FILE"
-              echo "Installing jsonnet..."
-              curl -sSfL https://github.com/google/go-jsonnet/releases/download/v0.20.0/go-jsonnet_0.20.0_linux_amd64.tar.gz | tar -xz -C /tmp
-              chmod +x /tmp/jsonnet
-              /tmp/jsonnet "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
+              echo "Installing jsonnet from Alpine repositories..."
+              apk add --no-cache jsonnet
+              jsonnet "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
             else
               echo "Copying JSON file: $SOURCE_FILE"
               cp "/tmp/source-$SOURCE_FILE" "/tmp/$DASHBOARD_NAME.json"
