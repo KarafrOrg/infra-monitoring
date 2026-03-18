@@ -64,48 +64,28 @@ spec:
             SOURCE_FILE=$(echo "$SOURCE_FILES" | head -n 1)
             
             echo "Source file: $SOURCE_FILE"
-            
-            # Extract and decode the content properly
-            CONTENT=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o json | jq -r ".data[\"$SOURCE_FILE\"]")
-            
-            # Write content to file
-            printf "%s" "$CONTENT" > "/tmp/source-$SOURCE_FILE"
-            
-            echo "Extracted file size: $(wc -c < /tmp/source-$SOURCE_FILE) bytes"
-
-            # Check if it's a jsonnet file
-            if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
-              echo "Rendering jsonnet file: $SOURCE_FILE"
-              echo "Installing jsonnet and dependencies..."
-              apk add --no-cache jsonnet git
-              
-              echo "Installing grafonnet library..."
-              mkdir -p /tmp/jsonnet-libs
-              cd /tmp/jsonnet-libs
-              git clone --depth 1 https://github.com/grafana/grafonnet-lib.git
-              
-              echo "Rendering dashboard with grafonnet..."
-              jsonnet -J /tmp/jsonnet-libs/grafonnet-lib "/tmp/source-$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
+            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath="{.data['$SOURCE_FILE']}" > "/tmp/source-$SOURCE_FILE"
             else
               echo "Copying JSON file: $SOURCE_FILE"
               cp "/tmp/source-$SOURCE_FILE" "/tmp/$DASHBOARD_NAME.json"
             fi
 
-            echo "Creating configmap: $DASHBOARD_NAME"
-            
-            # Create ConfigMap and apply it directly, then label it separately
             kubectl create configmap "$DASHBOARD_NAME" \
+            --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
+            -n {{ .Release.Namespace }} \
+            --dry-run=client -o yaml
+
+            echo "Creating configmap: $DASHBOARD_NAME"
+:            kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Release.Namespace }} \
-              --dry-run=client -o yaml | kubectl apply -f -
-            
-            # Add labels separately to avoid annotation issues
-            kubectl label configmap "$DASHBOARD_NAME" \
-              -n {{ .Release.Namespace }} \
+              --dry-run=client -o yaml | \
+            kubectl label -f - \
               app.kubernetes.io/name={{ include "grafana.name" . }} \
               app.kubernetes.io/instance={{ .Release.Name }} \
-              {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" }} \
-              --overwrite
+              {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" | quote }} \
+              --local -o yaml | \
+            kubectl apply -f -
 
             echo "Successfully created configmap: $DASHBOARD_NAME"
 
