@@ -13,13 +13,15 @@ spec:
 
   templates:
     - name: list-dashboards
-      script:
-        image: bitnami/kubectl:1.31
-        command: ["/bin/bash"]
-        source: |
-          set -e
-          ITEMS=$(kubectl get configmaps -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep -- '-source$' | sed 's/-source$//' | jq -R -s -c 'split("\n") | map(select(length > 0))')
-          echo "$ITEMS" > /tmp/dashboard-list.json
+      container:
+        image: alpine/k8s:1.28.13
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - |
+            set -e
+            apk add --no-cache jq
+            ITEMS=$(kubectl get configmaps -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep -- '-source$' | sed 's/-source$//' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            echo "$ITEMS" > /tmp/dashboard-list.json
       outputs:
         parameters:
           - name: dashboard-list
@@ -43,35 +45,34 @@ spec:
         parameters:
           - name: dashboard-file
       container:
-        image: bitnami/kubectl:1.31
-        command: ["/bin/bash", "-c"]
+        image: alpine/k8s:1.28.13
+        command: [ "/bin/sh", "-c" ]
         args:
           - |
             set -e
+
+            # Install dependencies
+            apk add --no-cache curl jq bash
+
             DASHBOARD_NAME={{ `"{{inputs.parameters.dashboard-file}}"` }}
             SOURCE_CM="$DASHBOARD_NAME-source"
-            
+
             echo "Processing dashboard: $DASHBOARD_NAME from ConfigMap: $SOURCE_CM"
 
             # Get the source file from the ConfigMap
             SOURCE_FILES=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath='{.data}' | jq -r 'keys[]')
             SOURCE_FILE=$(echo "$SOURCE_FILES" | head -n 1)
-            
+
             echo "Source file: $SOURCE_FILE"
             kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath="{.data['$SOURCE_FILE']}" > "/tmp/$SOURCE_FILE"
 
             # Check if it's a jsonnet file
-            if [[ "${SOURCE_FILE##*.}" == "jsonnet" ]]; then
+            if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
               echo "Rendering jsonnet file: $SOURCE_FILE"
-              # Install jsonnet if needed (for bitnami/kubectl image)
-              if ! command -v jsonnet &> /dev/null; then
-                echo "Installing jsonnet..."
-                curl -Lo /tmp/jsonnet https://github.com/google/go-jsonnet/releases/download/v0.20.0/go-jsonnet_0.20.0_Linux_x86_64
-                chmod +x /tmp/jsonnet
-                /tmp/jsonnet "/tmp/$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
-              else
-                jsonnet "/tmp/$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
-              fi
+              echo "Installing jsonnet..."
+              curl -Lo /tmp/jsonnet https://github.com/google/go-jsonnet/releases/download/v0.20.0/go-jsonnet_0.20.0_Linux_x86_64
+              chmod +x /tmp/jsonnet
+              /tmp/jsonnet "/tmp/$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
             else
               echo "Copying JSON file: $SOURCE_FILE"
               cp "/tmp/$SOURCE_FILE" "/tmp/$DASHBOARD_NAME.json"
