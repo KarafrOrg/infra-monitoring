@@ -27,10 +27,10 @@ spec:
             echo "$ITEMS" > /tmp/dashboard-list.json
         resources:
           requests:
-            memory: "10Mi"
+            memory: "100Mi"
             cpu: "10m"
           limits:
-            memory: "10Mi"
+            memory: "100Mi"
             cpu: "100m"
       outputs:
         parameters:
@@ -125,10 +125,10 @@ spec:
             echo "Successfully created configmap: $DASHBOARD_NAME"
         resources:
           requests:
-            memory: "10Mi"
+            memory: "100Mi"
             cpu: "10m"
           limits:
-            memory: "10Mi"
+            memory: "100Mi"
             cpu: "100m"
 
     - name: cleanup-dashboards
@@ -181,8 +181,8 @@ spec:
             echo "Cleanup complete"
         resources:
           requests:
-            memory: "10Mi"
+            memory: "100Mi"
             cpu: "10m"
           limits:
-            memory: "10Mi"
+            memory: "100Mi"
             cpu: "100m"
