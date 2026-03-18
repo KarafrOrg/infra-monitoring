@@ -16,8 +16,7 @@ spec:
     - name: list-dashboards
       script:
         image: alpine:latest
-        command: [ "/bin/sh" ]
-        # language=bash
+        command: ["/bin/sh"]
         source: |
           set -e
           DASHBOARD_DIR="/dashboards"
@@ -43,7 +42,7 @@ spec:
       steps:
         - - name: render-each-dashboard
             template: render-dashboard
-            withParam: "{{steps.list-dashboards.outputs.parameters.dashboard-list}}"
+            withParam: "{{`{{steps.list-dashboards.outputs.parameters.dashboard-list}}`}}"
 
     - name: render-dashboard
       inputs:
@@ -56,7 +55,8 @@ spec:
         args:
           - |
             set -e
-            DASHBOARD_FILE="{{inputs.parameters.dashboard-file}}"
+            # Escape Argo expression for Helm
+            DASHBOARD_FILE="{{`{{inputs.parameters.dashboard-file}}`}}"
             DASHBOARD_NAME=$(basename "$DASHBOARD_FILE" .jsonnet)
             echo "Processing dashboard: $DASHBOARD_FILE -> $DASHBOARD_NAME.json"
 
@@ -66,6 +66,7 @@ spec:
               cp "/dashboards/$DASHBOARD_FILE" "/tmp/$DASHBOARD_NAME.json"
             fi
 
+            # Use in-cluster authentication
             kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json"="/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Values.grafana.namespace | default "monitoring" }} \
@@ -74,6 +75,7 @@ spec:
           - name: dashboards
             mountPath: /dashboards
             readOnly: true
+
       volumes:
         - name: dashboards
           configMap:
