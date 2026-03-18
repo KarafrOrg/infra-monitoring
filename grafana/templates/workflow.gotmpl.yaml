@@ -11,6 +11,11 @@ spec:
   ttlStrategy:
     secondsAfterCompletion: {{ .Values.argo.ttlSecondsAfterCompletion | default 600 }}
 
+  volumes:
+    - name: dashboards
+      configMap:
+        name: {{ .Values.grafana.dashboards.configMapName | default "grafana-dashboards" }}
+
   templates:
 
     - name: list-dashboards
@@ -79,7 +84,3 @@ spec:
             mountPath: /dashboards
             readOnly: true
 
-      volumes:
-        - name: dashboards
-          configMap:
-            name: {{ .Values.grafana.dashboards.configMapName | default "grafana-dashboards" }}
