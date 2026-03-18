@@ -1,4 +1,4 @@
-local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet'
+local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
 g.dashboard.new('Faro dashboard')
 + g.dashboard.withUid('faro-grafonnet-demo')
