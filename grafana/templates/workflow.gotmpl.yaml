@@ -76,7 +76,7 @@ spec:
             --dry-run=client -o yaml
 
             echo "Creating configmap: $DASHBOARD_NAME"
-:            kubectl create configmap "$DASHBOARD_NAME" \
+            kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Release.Namespace }} \
               --dry-run=client -o yaml | \
