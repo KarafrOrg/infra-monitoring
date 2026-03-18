@@ -1,10 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: {{ include "grafana.fullname" . }}-render
+  generateName: {{ include "grafana.fullname" . }}-render-
   labels:
     app.kubernetes.io/name: {{ include "grafana.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
   entrypoint: render-grafana-dashboards
   serviceAccountName: {{ .Values.argo.serviceAccount }}
