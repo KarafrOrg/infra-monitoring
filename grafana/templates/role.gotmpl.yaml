@@ -1,8 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.argo.serviceAccount }}
+  name: {{ .Values.argo.serviceAccount }}-role
 rules:
   - apiGroups: [ "" ]
     resources: [ "configmaps" ]
     verbs: [ "get", "list", "create", "update", "patch" ]
+  - apiGroups: [ "argoproj.io" ]
+    resources: [ "workflowtaskresults" ]
+    verbs: [ "create", "patch" ]

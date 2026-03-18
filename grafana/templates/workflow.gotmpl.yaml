@@ -7,35 +7,19 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   entrypoint: render-grafana-dashboards
-  serviceAccountName: {{ .Values.argo.serviceAccount | default "grafana-renderer" }}
+  serviceAccountName: {{ .Values.argo.serviceAccount }}
   ttlStrategy:
-    secondsAfterCompletion: {{ .Values.argo.ttlSecondsAfterCompletion | default 600 }}
-
-  volumes:
-    - name: dashboards
-      configMap:
-        name: {{ .Values.grafana.dashboards.configMapName | default "grafana-dashboards" }}
+    secondsAfterCompletion: {{ .Values.argo.ttlSecondsAfterCompletion }}
 
   templates:
     - name: list-dashboards
       script:
-        image: alpine:latest
+        image: bitnami/kubectl:latest
         command: ["/bin/sh"]
         source: |
           set -e
-          DASHBOARD_DIR="/dashboards"
-          ITEMS="["
-          for f in "$DASHBOARD_DIR"/*.json "$DASHBOARD_DIR"/*.jsonnet; do
-            test -e "$f" {{ printf "||" }} continue
-            BASENAME=$(basename "$f")
-            ITEMS="$ITEMS\"$BASENAME\","
-          done
-          ITEMS="${ITEMS%,}]"
+          ITEMS=$(kubectl get configmaps -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep -- '-source$' | sed 's/-source$//' | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "$ITEMS" > /tmp/dashboard-list.json
-        volumeMounts:
-          - name: dashboards
-            mountPath: /dashboards
-            readOnly: true
       outputs:
         parameters:
           - name: dashboard-list
@@ -64,28 +48,38 @@ spec:
         args:
           - |
             set -e
-            DASHBOARD_FILE={{ `"{{inputs.parameters.dashboard-file}}"` }}
-            DASHBOARD_NAME=$(basename "$DASHBOARD_FILE" .jsonnet)
-            DASHBOARD_NAME=$(basename "$DASHBOARD_NAME" .json)
-            echo "Processing dashboard: $DASHBOARD_FILE -> $DASHBOARD_NAME.json"
+            DASHBOARD_NAME={{ `"{{inputs.parameters.dashboard-file}}"` }}
+            SOURCE_CM="$DASHBOARD_NAME-source"
+            
+            echo "Processing dashboard: $DASHBOARD_NAME from ConfigMap: $SOURCE_CM"
 
-            if [ "${DASHBOARD_FILE##*.}" = "jsonnet" ]; then
-              echo "Rendering jsonnet file: $DASHBOARD_FILE"
-              jsonnet "/dashboards/$DASHBOARD_FILE" > "/tmp/$DASHBOARD_NAME.json"
+            # Get the source file from the ConfigMap
+            SOURCE_FILES=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath='{.data}' | jq -r 'keys[]')
+            SOURCE_FILE=$(echo "$SOURCE_FILES" | head -n 1)
+            
+            echo "Source file: $SOURCE_FILE"
+            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o jsonpath="{.data['$SOURCE_FILE']}" > "/tmp/$SOURCE_FILE"
+
+            # Check if it's a jsonnet file
+            if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
+              echo "Rendering jsonnet file: $SOURCE_FILE"
+              jsonnet "/tmp/$SOURCE_FILE" > "/tmp/$DASHBOARD_NAME.json"
             else
-              echo "Copying JSON file: $DASHBOARD_FILE"
-              cp "/dashboards/$DASHBOARD_FILE" "/tmp/$DASHBOARD_NAME.json"
+              echo "Copying JSON file: $SOURCE_FILE"
+              cp "/tmp/$SOURCE_FILE" "/tmp/$DASHBOARD_NAME.json"
             fi
 
             echo "Creating configmap: $DASHBOARD_NAME"
             kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Release.Namespace }} \
-              --dry-run=client -o yaml | kubectl apply -f -
+              --dry-run=client -o yaml | \
+            kubectl label -f - \
+              app.kubernetes.io/name={{ include "grafana.name" . }} \
+              app.kubernetes.io/instance={{ .Release.Name }} \
+              {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" | quote }} \
+              --local -o yaml | \
+            kubectl apply -f -
 
             echo "Successfully created configmap: $DASHBOARD_NAME"
-        volumeMounts:
-          - name: dashboards
-            mountPath: /dashboards
-            readOnly: true
 

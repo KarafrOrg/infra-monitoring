@@ -1,12 +1,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: grafana-renderer-binding
+  name: {{ .Values.argo.serviceAccount }}-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: grafana-renderer-role
+  name: {{ .Values.argo.serviceAccount }}-role
 subjects:
   - kind: ServiceAccount
-    name: grafana-renderer
+    name: {{ .Values.argo.serviceAccount }}
     namespace: {{ .Release.Namespace }}

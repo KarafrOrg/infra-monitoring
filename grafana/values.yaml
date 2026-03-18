@@ -95,4 +95,5 @@ grafana:
 
 argo:
   serviceAccount: grafana-renderer
+  ttlSecondsAfterCompletion: 600
 
