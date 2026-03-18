@@ -102,6 +102,10 @@ spec:
             kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Release.Namespace }} \
+              --dry-run=client -o yaml
+            kubectl create configmap "$DASHBOARD_NAME" \
+              --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
+              -n {{ .Release.Namespace }} \
               --dry-run=client -o yaml | \
             kubectl label -f - \
               app.kubernetes.io/name={{ include "grafana.name" . }} \
