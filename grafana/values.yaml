@@ -93,3 +93,6 @@ grafana:
   serviceMonitor:
     enabled: true
 
+argo:
+  serviceAccount: grafana-renderer
+
