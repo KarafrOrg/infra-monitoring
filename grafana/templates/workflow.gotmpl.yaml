@@ -2,13 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
   name: {{ include "grafana.fullname" . }}-render
-  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "grafana.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   entrypoint: render-grafana-dashboards
-  serviceAccountName: {{ .Values.argo.serviceAccount | default "argo" }}
+  serviceAccountName: {{ .Values.argo.serviceAccount }}
   ttlStrategy:
     secondsAfterCompletion: {{ .Values.argo.ttlSecondsAfterCompletion | default 600 }}
 
