@@ -1,12 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: grafonnet-render-
+  name: {{ include "grafana.fullname" . }}-render
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "grafana.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   entrypoint: render-grafana-dashboards
-  serviceAccountName: argo
+  serviceAccountName: {{ .Values.argo.serviceAccount | default "argo" }}
   ttlStrategy:
-    secondsAfterCompletion: 600
+    secondsAfterCompletion: {{ .Values.argo.ttlSecondsAfterCompletion | default 600 }}
+
   templates:
 
     - name: list-dashboards
@@ -23,7 +28,6 @@ spec:
             BASENAME=$(basename "$f")
             ITEMS="$ITEMS\"$BASENAME\","
           done
-          # remove trailing comma and close array
           ITEMS="${ITEMS%,}]"
           echo "$ITEMS"
         volumeMounts:
@@ -40,36 +44,33 @@ spec:
       steps:
         - - name: render-each-dashboard
             template: render-dashboard
-            withParam: "{{steps.list-dashboards.outputs.parameters.dashboard-list}}"
+            withParam: "{{`{{steps.list-dashboards.outputs.parameters.dashboard-list}}`}}"
 
     - name: render-dashboard
       inputs:
         parameters:
           - name: dashboard-file
       container:
-        image: golang:1.21  # must have jsonnet + kubectl
+        image: golang:1.21
         command: [ "/bin/sh", "-c" ]
         # language=bash
         args:
           - |
             set -e
-            DASHBOARD_FILE='{{inputs.parameters.dashboard-file}}'
+            DASHBOARD_FILE='{{`{{inputs.parameters.dashboard-file}}`}}'
             DASHBOARD_NAME=$(basename "$DASHBOARD_FILE" .jsonnet)
             echo "Processing dashboard: $DASHBOARD_FILE -> $DASHBOARD_NAME.json"
 
-            # Render Jsonnet if file ends with .jsonnet
             if [ "${DASHBOARD_FILE##*.}" = "jsonnet" ]; then
               jsonnet "/dashboards/$DASHBOARD_FILE" > "/tmp/$DASHBOARD_NAME.json"
             else
               cp "/dashboards/$DASHBOARD_FILE" "/tmp/$DASHBOARD_NAME.json"
             fi
 
-            # Apply as ConfigMap
             kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json"="/tmp/$DASHBOARD_NAME.json" \
-              -n monitoring \
+              -n {{ .Values.grafana.namespace | default "monitoring" }} \
               --dry-run=client -o yaml | kubectl apply -f -
-
         volumeMounts:
           - name: dashboards
             mountPath: /dashboards
@@ -80,7 +81,7 @@ spec:
       volumes:
         - name: dashboards
           configMap:
-            name: grafana-dashboards
+            name: {{ .Values.grafana.dashboards.configMapName | default "grafana-dashboards" }}
         - name: kubeconfig
           configMap:
-            name: kubeconfig
+            name: {{ .Values.argo.kubeconfigConfigMap | default "kubeconfig" }}
