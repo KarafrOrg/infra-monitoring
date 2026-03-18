@@ -16,7 +16,8 @@ spec:
     - name: list-dashboards
       script:
         image: alpine:latest
-        command: ["/bin/sh"]
+        command: [ "/bin/sh" ]
+        # language=bash
         source: |
           set -e
           DASHBOARD_DIR="/dashboards"
@@ -40,6 +41,8 @@ spec:
 
     - name: render-grafana-dashboards
       steps:
+        - - name: list-dashboards
+            template: list-dashboards
         - - name: render-each-dashboard
             template: render-dashboard
             withParam: "{{`{{steps.list-dashboards.outputs.parameters.dashboard-list}}`}}"
