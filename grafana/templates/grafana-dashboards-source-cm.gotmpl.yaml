@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: {{ include "grafana.name" $ }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  {{ base $path }}: {{ $.Files.Get $path | quote }}
+  {{ base $path }}: {{ $.Files.Get $path | toJson }}
 {{- end }}
 {{- range $path, $_ := .Files.Glob "dashboards/*.jsonnet" }}
 ---
@@ -20,5 +20,5 @@ metadata:
     app.kubernetes.io/name: {{ include "grafana.name" $ }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
 data:
-  {{ base $path }}: {{ $.Files.Get $path | quote }}
+  {{ base $path }}: {{ $.Files.Get $path | toJson }}
 {{- end }}

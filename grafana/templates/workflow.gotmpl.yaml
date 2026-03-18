@@ -65,25 +65,18 @@ spec:
             
             echo "Source file: $SOURCE_FILE"
             
-            # Debug: Show what's in the ConfigMap
-            echo "=== ConfigMap content ==="
-            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o yaml
-            
             # Extract and decode the content properly
-            echo "=== Extracting content ==="
             CONTENT=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o json | jq -r ".data[\"$SOURCE_FILE\"]")
             
             # Write content to file
             printf "%s" "$CONTENT" > "/tmp/source-$SOURCE_FILE"
             
             echo "Extracted file size: $(wc -c < /tmp/source-$SOURCE_FILE) bytes"
-            echo "First 10 lines of extracted file:"
-            head -10 "/tmp/source-$SOURCE_FILE" || echo "(file is empty or error)"
 
             # Check if it's a jsonnet file
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
               echo "Rendering jsonnet file: $SOURCE_FILE"
-              echo "Installing jsonnet and dependencies from Alpine repositories..."
+              echo "Installing jsonnet and dependencies..."
               apk add --no-cache jsonnet git
               
               echo "Installing grafonnet library..."
@@ -99,16 +92,20 @@ spec:
             fi
 
             echo "Creating configmap: $DASHBOARD_NAME"
+            
+            # Create ConfigMap and apply it directly, then label it separately
             kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Release.Namespace }} \
-              --dry-run=client -o yaml | \
-            kubectl label -f - \
+              --dry-run=client -o yaml | kubectl apply -f -
+            
+            # Add labels separately to avoid annotation issues
+            kubectl label configmap "$DASHBOARD_NAME" \
+              -n {{ .Release.Namespace }} \
               app.kubernetes.io/name={{ include "grafana.name" . }} \
               app.kubernetes.io/instance={{ .Release.Name }} \
-              {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" | quote }} \
-              --local -o yaml | \
-            kubectl apply -f -
+              {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" }} \
+              --overwrite
 
             echo "Successfully created configmap: $DASHBOARD_NAME"
 
