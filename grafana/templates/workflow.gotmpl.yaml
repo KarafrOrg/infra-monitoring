@@ -35,7 +35,6 @@ spec:
 
         - - name: render-each-dashboard
             template: render-dashboard
-            parallelism: 3
             arguments:
               parameters:
                 - name: dashboard-file
