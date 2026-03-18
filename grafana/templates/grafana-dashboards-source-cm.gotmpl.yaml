@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.grafana.dashboards.configMapName | default "grafana-dashboards" }}
+  labels:
+    app.kubernetes.io/name: {{ include "grafana.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+{{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
+  {{ base $path }}: {{ $.Files.Get $path | quote }}
+{{- end }}
+{{- range $path, $_ := .Files.Glob "dashboards/*.jsonnet" }}
+  {{ base $path }}: {{ $.Files.Get $path | quote }}
+{{- end }}
+
