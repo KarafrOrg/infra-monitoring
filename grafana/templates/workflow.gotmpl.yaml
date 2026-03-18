@@ -32,6 +32,7 @@ spec:
       steps:
         - - name: list-dashboards
             template: list-dashboards
+
         - - name: render-each-dashboard
             template: render-dashboard
             arguments:
@@ -39,6 +40,13 @@ spec:
                 - name: dashboard-file
                   value: {{ `"{{item}}"` }}
             withParam: {{ `"{{steps.list-dashboards.outputs.parameters.dashboard-list}}"` }}
+
+        - - name: cleanup-orphaned-dashboards
+            template: cleanup-dashboards
+            arguments:
+              parameters:
+                - name: dashboard-list
+                  value: {{ `"{{steps.list-dashboards.outputs.parameters.dashboard-list}}"` }}
 
     - name: render-dashboard
       inputs:
@@ -65,25 +73,18 @@ spec:
 
             echo "Source file: $SOURCE_FILE"
 
-            # Debug: Show what's in the ConfigMap
-            echo "=== ConfigMap content ==="
-            kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o yaml
-
             # Extract and decode the content properly
-            echo "=== Extracting content ==="
             CONTENT=$(kubectl get configmap "$SOURCE_CM" -n {{ .Release.Namespace }} -o json | jq -r ".data[\"$SOURCE_FILE\"]")
 
             # Write content to file
             printf "%s" "$CONTENT" > "/tmp/source-$SOURCE_FILE"
 
             echo "Extracted file size: $(wc -c < /tmp/source-$SOURCE_FILE) bytes"
-            echo "First 10 lines of extracted file:"
-            head -10 "/tmp/source-$SOURCE_FILE" || echo "(file is empty or error)"
 
             # Check if it's a jsonnet file
             if [ "${SOURCE_FILE##*.}" = "jsonnet" ]; then
               echo "Rendering jsonnet file: $SOURCE_FILE"
-              echo "Installing jsonnet and dependencies from Alpine repositories..."
+              echo "Installing jsonnet and dependencies..."
               apk add --no-cache jsonnet git
 
               echo "Installing grafonnet library..."
@@ -99,10 +100,7 @@ spec:
             fi
 
             echo "Creating configmap: $DASHBOARD_NAME"
-            kubectl create configmap "$DASHBOARD_NAME" \
-              --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
-              -n {{ .Release.Namespace }} \
-              --dry-run=client -o yaml
+
             kubectl create configmap "$DASHBOARD_NAME" \
               --from-file="$DASHBOARD_NAME.json=/tmp/$DASHBOARD_NAME.json" \
               -n {{ .Release.Namespace }} \
@@ -115,4 +113,52 @@ spec:
             kubectl apply -f -
 
             echo "Successfully created configmap: $DASHBOARD_NAME"
+
+    - name: cleanup-dashboards
+      inputs:
+        parameters:
+          - name: dashboard-list
+      container:
+        image: alpine/k8s:1.28.13
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - |
+            set -e
+            
+            # Install dependencies
+            apk add --no-cache jq
+            
+            CURRENT_DASHBOARDS={{ `"{{inputs.parameters.dashboard-list}}"` }}
+            
+            echo "Current dashboards from source: $CURRENT_DASHBOARDS"
+            
+            # Get all existing dashboard ConfigMaps (those with the grafana-dashboard label but NOT -source suffix)
+            EXISTING_CMS=$(kubectl get configmaps -n {{ .Release.Namespace }} \
+              -l {{ index .Values "grafana" "sidecar" "dashboards" "label" }}={{ index .Values "grafana" "sidecar" "dashboards" "labelValue" }} \
+              -o jsonpath='{.items[*].metadata.name}')
+            
+            echo "Existing dashboard ConfigMaps: $EXISTING_CMS"
+            
+            # Convert current dashboards JSON array to space-separated list
+            CURRENT_LIST=$(echo "$CURRENT_DASHBOARDS" | jq -r '.[]' | tr '\n' ' ')
+            
+            echo "Checking for orphaned dashboards to delete..."
+            
+            # Check each existing ConfigMap
+            for cm in $EXISTING_CMS; do
+              # Skip if it ends with -source (those are source ConfigMaps)
+              if echo "$cm" | grep -q -- '-source$'; then
+                continue
+              fi
+              
+              # Check if this dashboard still exists in current list
+              if echo "$CURRENT_LIST" | grep -q -w "$cm"; then
+                echo "Keeping: $cm (still exists in source)"
+              else
+                echo "Deleting: $cm (no longer exists in source)"
+                kubectl delete configmap "$cm" -n {{ .Release.Namespace }}
+              fi
+            done
+            
+            echo "Cleanup complete"
 
