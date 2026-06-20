@@ -14,7 +14,7 @@ eck-stack:
       - name: default
         count: 3
         config:
-          node.roles: ["master", "data_hot", "ingest", "transform"]
+          node.roles: ["master", "data_content", "data_hot", "data_warm", "data_cold", "ingest", "transform"]
           node.store.allow_mmap: false
           xpack.ml.enabled: false
           action.auto_create_index: true
@@ -41,7 +41,7 @@ eck-stack:
                 resources:
                   requests:
                     cpu: 1000m
-                    memory: 2Gi
+                    memory: 4Gi
                   limits:
                     cpu: 2000m
                     memory: 4Gi
@@ -52,8 +52,7 @@ eck-stack:
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: 50Gi
-
+                  storage: 100Gi
   eck-kibana:
     enabled: true
     fullnameOverride: monitoring-kibana
@@ -63,7 +62,6 @@ eck-stack:
       name: monitoring-elasticsearch
     config:
       xpack.apm.ui.enabled: true
-
   eck-apm-server:
     enabled: true
     fullnameOverride: monitoring-apm
