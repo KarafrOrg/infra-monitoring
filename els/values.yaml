@@ -63,6 +63,24 @@ eck-stack:
       name: monitoring-elasticsearch
     config:
       xpack.apm.ui.enabled: true
+    http:
+      tls:
+        selfSignedCertificate:
+          disabled: true
+    podTemplate:
+      spec:
+        containers:
+          - name: kibana
+            readinessProbe:
+              httpGet:
+                path: /login
+                port: 5601
+                scheme: HTTP
+              initialDelaySeconds: 120
+              periodSeconds: 15
+              timeoutSeconds: 30
+              failureThreshold: 20
+              successThreshold: 1
   eck-apm-server:
     enabled: true
     fullnameOverride: monitoring-apm
@@ -181,3 +199,7 @@ eck-stack:
     enabled: false
   eck-package-registry:
     enabled: false
+
+kibana:
+  ingress:
+    domain: kibana.kubernetes.karafra.net

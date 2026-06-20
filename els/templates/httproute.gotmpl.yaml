@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kibana
+spec:
+  parentRefs:
+    - name: kibana
+      namespace: {{ .Release.Namespace }}
+      sectionName: http
+  hostnames:
+    - "{{ .Values.kibana.ingress.domain }}"
+  rules:
+    - backendRefs:
+        - name: monitoring-kibana-kb-http
+          port: 5601
