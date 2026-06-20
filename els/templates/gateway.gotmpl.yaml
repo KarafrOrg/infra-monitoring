@@ -10,5 +10,7 @@ spec:
       port: 80
       hostname: {{ .Values.kibana.ingress.domain | quote }}
       allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
         namespaces:
           from: Same

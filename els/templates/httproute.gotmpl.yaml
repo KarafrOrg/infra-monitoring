@@ -5,6 +5,8 @@ metadata:
 spec:
   parentRefs:
     - name: kibana
+      group: gateway.networking.k8s.io
+      kind: Gateway
       namespace: {{ .Release.Namespace }}
       sectionName: http
   hostnames:
@@ -12,4 +14,6 @@ spec:
   rules:
     - backendRefs:
         - name: monitoring-kibana-kb-http
+          group: ''
+          kind: Service
           port: 5601
