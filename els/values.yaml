@@ -9,10 +9,10 @@ eck-stack:
         maxUnavailable: 1
     podDisruptionBudget:
       spec:
-        minAvailable: 3
+        minAvailable: 2
     nodeSets:
       - name: default
-        count: 5
+        count: 3
         config:
           node.roles: ["master", "data_content", "data_hot", "data_warm", "data_cold", "ingest", "transform"]
           node.store.allow_mmap: false
@@ -66,6 +66,8 @@ eck-stack:
       telemetry.enabled: false
       xpack.fleet.enabled: false
       xpack.apm.ui.enabled: true
+      elasticsearch.requestTimeout: 120000
+      elasticsearch.shardTimeout: 120000
     http:
       tls:
         selfSignedCertificate:
@@ -74,6 +76,13 @@ eck-stack:
       spec:
         containers:
           - name: kibana
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1Gi
+              limits:
+                cpu: 2000m
+                memory: 2Gi
             readinessProbe:
               httpGet:
                 path: /login
