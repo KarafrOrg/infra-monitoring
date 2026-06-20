@@ -1,1 +1,5 @@
-{ }
+cloudflared:
+	enabled: true
+	tunnelName: kibana
+	hostname: kibana.kubernetes.karafra.net
+	service: http://monitoring-kibana-kb-http.infra-monitoring.svc.cluster.local:5601

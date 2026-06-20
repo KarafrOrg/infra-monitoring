@@ -9,10 +9,10 @@ eck-stack:
         maxUnavailable: 1
     podDisruptionBudget:
       spec:
-        minAvailable: 2
+        minAvailable: 3
     nodeSets:
       - name: default
-        count: 3
+        count: 5
         config:
           node.roles: ["master", "data_content", "data_hot", "data_warm", "data_cold", "ingest", "transform"]
           node.store.allow_mmap: false
@@ -58,10 +58,14 @@ eck-stack:
     enabled: true
     fullnameOverride: monitoring-kibana
     version: 9.4.0
-    count: 1
+    count: 2
     elasticsearchRef:
       name: monitoring-elasticsearch
     config:
+      server.publicBaseUrl: https://kibana.kubernetes.karafra.net
+      telemetry.enabled: false
+      xpack.fleet.enabled: false
+      xpack.usageCollection.enabled: false
       xpack.apm.ui.enabled: true
     http:
       tls:
