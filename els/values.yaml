@@ -65,7 +65,6 @@ eck-stack:
       server.publicBaseUrl: https://kibana.kubernetes.karafra.net
       telemetry.enabled: false
       xpack.fleet.enabled: false
-      xpack.usageCollection.enabled: false
       xpack.apm.ui.enabled: true
     http:
       tls:
