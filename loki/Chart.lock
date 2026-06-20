@@ -1,9 +1,0 @@
-dependencies:
-- name: loki
-  repository: https://grafana.github.io/helm-charts
-  version: 6.49.0
-- name: object-buckets
-  repository: https://karafrorg.github.io/object-buckets
-  version: 0.1.0
-digest: sha256:457ca113dca616dd80b03eecdb40627d8f874f159d7349375ad128ef6f149ef0
-generated: "2026-01-30T22:37:12.698008+01:00"

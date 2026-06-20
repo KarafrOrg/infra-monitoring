@@ -1,9 +1,0 @@
-dependencies:
-- name: mimir-distributed
-  repository: https://grafana.github.io/helm-charts
-  version: 6.1.0-weekly.376
-- name: object-buckets
-  repository: https://karafrorg.github.io/object-buckets
-  version: 0.1.0
-digest: sha256:f60fbafb1437134f11b4e7aff6e613a1a78ecc61489e97dd49adfe9f31404a8d
-generated: "2026-01-31T11:14:04.276632+01:00"

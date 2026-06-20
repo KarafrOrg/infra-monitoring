@@ -1,9 +1,0 @@
-dependencies:
-- name: object-buckets
-  repository: https://karafrorg.github.io/object-buckets
-  version: 0.1.0
-- name: tempo-distributed
-  repository: https://grafana-community.github.io/helm-charts/
-  version: 2.4.2
-digest: sha256:cd450ef18fc9ff326505461eaf7087b88379e5f1db4f9a62985cce454abb56ac
-generated: "2026-02-26T13:41:12.544521+01:00"
