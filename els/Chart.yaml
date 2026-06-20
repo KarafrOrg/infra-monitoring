@@ -1,0 +1,19 @@
+name: homelab-elastic-monitoring
+apiVersion: v2
+version: 0.1.0
+description: A Helm chart for deploying Elasticsearch, Kibana and APM on ECK
+type: application
+appVersion: "1.0.0"
+maintainers:
+  - name: KarafrOrg
+    email: karafra@karafra.net
+keywords:
+  - monitoring
+  - elasticsearch
+  - kibana
+  - apm
+  - homelab
+dependencies:
+  - name: eck-stack
+    version: 0.19.0
+    repository: https://helm.elastic.co
