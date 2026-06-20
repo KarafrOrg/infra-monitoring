@@ -52,7 +52,7 @@ eck-stack:
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
-                  storage: 100Gi
+                  storage: 50Gi
   eck-kibana:
     enabled: true
     fullnameOverride: monitoring-kibana
